@@ -1,9 +1,10 @@
-const CACHE_NAME = 'undercover-v1';
+const CACHE_NAME = 'ovejasylobos-v1';
 const urlsToCache = [
   'index.html',
   'style.css',
   'app.js',
-  'manifest.json'
+  'manifest.json',
+  'icon.png'
 ];
 
 self.addEventListener('install', event => {
