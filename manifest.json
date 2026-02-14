@@ -1,7 +1,7 @@
 {
   "name": "Ovejas y Lobos",
   "short_name": "Ovejas y Lobos",
-  "description": "Juego de roles sociales para adivinar quien es el Lobo entre las Ovejas",
+  "description": "Juego de roles sociales para adivinar quien es el Lobo disfrazado de Oveja",
   "start_url": "index.html",
   "scope": ".",
   "display": "standalone",
