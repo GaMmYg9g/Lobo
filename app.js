@@ -1290,19 +1290,19 @@ function cambiarPalabraDuranteJuego() {
     renderJuego();
 }
 
-/// ---------- VOTACIÓN (CON ESTILO MEJORADO) ----------
+// ---------- VOTACIÓN (COMPLETA Y CORREGIDA) ----------
 function renderVotacion() {
     let activePlayers = gameState.playersInGame.filter((_, idx) => !gameState.eliminatedPlayers.includes(idx));
     let votos = [];
     let votanteActual = 0;
     
     let html = `
-        <div class="screen game-screen-modern">
-            <h2 class="neon-title" style="font-size: 1.6rem;">🗳️ VOTACIÓN</h2>
-            <div class="round-indicator">Ronda ${gameState.round}</div>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 1.8rem;">🗳️ VOTACIÓN</h2>
+            <div class="round-indicator" style="margin-bottom: 10px;">Ronda ${gameState.round}</div>
             
             <!-- Indicador de votante actual -->
-            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2); margin: 10px 0;">
                 <div style="color: white; font-size: 1rem; margin-bottom: 5px;">🎯 Le toca votar a:</div>
                 <div class="order-names" style="font-size: 1.8rem; background: rgba(0,0,0,0.2);" id="nombreVotante">${activePlayers[0]?.nombre || ''}</div>
                 <div style="color: rgba(255,255,255,0.8); margin-top: 5px; font-size: 0.9rem;" id="contadorVotos">Voto 1 de ${activePlayers.length}</div>
@@ -1311,7 +1311,7 @@ function renderVotacion() {
             <p style="color: #a0a0a0; text-align: center; margin: 10px 0;">👆 Toca el nombre de tu sospechoso</p>
             
             <!-- Lista de jugadores -->
-            <div class="players-list" id="votacionList" style="max-height: 350px; overflow-y: auto;">
+            <div class="players-list" id="votacionList" style="max-height: 350px; overflow-y: auto; margin-bottom: 10px;">
                 ${activePlayers.map((p, idx) => {
                     let originalIndex = gameState.playersInGame.findIndex(sp => sp.id === p.id);
                     return `
@@ -1329,25 +1329,24 @@ function renderVotacion() {
             
             <!-- Botones de acción -->
             <div style="display: flex; gap: 10px; margin: 15px 0;">
-                <button class="btn-modern" id="reiniciarVotosBtn" style="flex: 1; background: #2a2a3a;">🔄 Reiniciar</button>
-                <button class="btn-modern" id="finalizarVotacionBtn" style="flex: 1;">🔍 Resultado</button>
+                <button class="btn-modern" id="reiniciarVotosBtn" style="flex: 1; background: #2a2a3a; padding: 12px;">🔄 Reiniciar</button>
+                <button class="btn-modern" id="finalizarVotacionBtn" style="flex: 1; padding: 12px;">🔍 Resultado</button>
             </div>
             
-            <button class="btn-modern" id="volverJuego" style="background: #2a2a3a;">◀️ Seguir preguntando</button>
+            <button class="btn-modern" id="volverJuego" style="background: #2a2a3a; width: 100%;">◀️ Seguir preguntando</button>
         </div>
     `;
     
     app.innerHTML = html;
-    
-    // ... resto del código (event listeners, etc.) ...
     
     let nombreVotante = document.getElementById('nombreVotante');
     let contadorVotos = document.getElementById('contadorVotos');
     let reiniciarBtn = document.getElementById('reiniciarVotosBtn');
     let finalizarBtn = document.getElementById('finalizarVotacionBtn');
     
+    // Función para actualizar badges de votos
     function actualizarBadges() {
-        document.querySelectorAll('.vote-count-badge').forEach(badge => {
+        document.querySelectorAll('.vote-badge-modern').forEach(badge => {
             badge.style.display = 'none';
         });
         
@@ -1357,12 +1356,11 @@ function renderVotacion() {
         });
         
         Object.keys(conteo).forEach(idx => {
-            let card = document.querySelector(`.vote-player-card[data-originalindex="${idx}"]`);
+            let card = document.querySelector(`.vote-card-modern[data-originalindex="${idx}"]`);
             if (card) {
-                let badge = card.querySelector('.vote-count-badge');
+                let badge = card.querySelector('.vote-badge-modern');
                 badge.style.display = 'block';
                 badge.textContent = `${conteo[idx]} ${conteo[idx] === 1 ? 'voto' : 'votos'}`;
-                
                 badge.style.animation = 'pulse 0.5s';
                 setTimeout(() => {
                     badge.style.animation = '';
@@ -1371,11 +1369,11 @@ function renderVotacion() {
         });
     }
     
+    // Función para actualizar el votante actual
     function actualizarVotanteActual() {
         if (votanteActual < activePlayers.length) {
             nombreVotante.textContent = activePlayers[votanteActual].nombre;
             contadorVotos.textContent = `Voto ${votos.length + 1} de ${activePlayers.length}`;
-            
             nombreVotante.style.animation = 'pulse 0.5s';
             setTimeout(() => {
                 nombreVotante.style.animation = '';
@@ -1386,7 +1384,8 @@ function renderVotacion() {
         }
     }
     
-    document.querySelectorAll('.vote-player-card').forEach(card => {
+    // Event listener para las tarjetas (votar)
+    document.querySelectorAll('.vote-card-modern').forEach(card => {
         card.addEventListener('click', function() {
             if (votanteActual >= activePlayers.length) {
                 mostrarToast('✓ Todos ya votaron');
@@ -1410,7 +1409,7 @@ function renderVotacion() {
             
             this.style.backgroundColor = '#2a2a4a';
             this.style.borderColor = '#667eea';
-            this.style.transform = 'scale(1.05)';
+            this.style.transform = 'scale(1.02)';
             setTimeout(() => {
                 this.style.backgroundColor = '';
                 this.style.borderColor = '';
@@ -1426,13 +1425,14 @@ function renderVotacion() {
         });
     });
     
+    // Botón reiniciar
     reiniciarBtn.addEventListener('click', () => {
         votos = [];
         votanteActual = 0;
         actualizarBadges();
         actualizarVotanteActual();
         
-        document.querySelectorAll('.vote-player-card').forEach(card => {
+        document.querySelectorAll('.vote-card-modern').forEach(card => {
             card.style.animation = 'shake 0.5s';
             setTimeout(() => {
                 card.style.animation = '';
@@ -1442,6 +1442,7 @@ function renderVotacion() {
         mostrarToast('🔄 Votación reiniciada');
     });
     
+    // Botón finalizar
     finalizarBtn.addEventListener('click', () => {
         if (votos.length === 0) {
             mostrarToast('❌ Debe haber al menos un voto');
@@ -1493,11 +1494,8 @@ function renderVotacion() {
             
             modalClose.onclick = () => {
                 modal.classList.add('hidden');
-                // En caso de empate, nadie es eliminado, solo avanzamos a la siguiente ronda
                 gameState.round++;
-                // 🔄 Reordenar aleatoriamente para la siguiente ronda
                 gameState.ordenPreguntas = generarOrdenPreguntas();
-                console.log('🔄 Nuevo orden de preguntas (tras empate):', gameState.ordenPreguntas.map(idx => gameState.playersInGame[idx].nombre));
                 currentScreen = 'juego';
                 renderScreen();
             };
@@ -1522,7 +1520,6 @@ function renderVotacion() {
             ? `✅ ¡Correcto! ${jugadorEliminado.nombre} era un LOBO.`
             : `❌ Oh no... ${jugadorEliminado.nombre} NO era el LOBO. Era una OVEJA.`;
         
-        // Verificar cuántos lobos quedan
         let lobosRestantes = gameState.impostorIndexes.filter(idx => !gameState.eliminatedPlayers.includes(idx) && idx !== eliminadoIdx).length;
         
         modalBody.innerHTML = `
@@ -1533,7 +1530,7 @@ function renderVotacion() {
                 <div style="background: #1e1e2e; border-radius: 15px; padding: 15px; margin-top: 15px;">
                     <p style="color: #ffd700; margin: 0;">🗳️ Recibió ${maxVotos} ${maxVotos === 1 ? 'voto' : 'votos'}</p>
                     <p style="color: #a0a0a0; margin-top: 5px;">Total de votos: ${votos.length}</p>
-                    ${esImpostor ? `<p style="color: #ff6b6b; margin-top: 10px;">🐺 Quedan ${lobosRestantes} ${lobosRestantes === 1 ? 'lobo' : 'lobos'} en el rebaño</p>` : ''}
+                    ${esImpostor ? `<p style="color: #ff6b6b; margin-top: 10px;">🐺 Quedan ${lobosRestantes} ${lobosRestantes === 1 ? 'lobo' : 'lobos'}</p>` : ''}
                 </div>
             </div>
         `;
@@ -1543,34 +1540,26 @@ function renderVotacion() {
         modalClose.onclick = () => {
             modal.classList.add('hidden');
             
-            // Siempre eliminar al jugador votado
             if (!gameState.eliminatedPlayers.includes(eliminadoIdx)) {
                 gameState.eliminatedPlayers.push(eliminadoIdx);
             }
             
-            // Verificar si TODOS los lobos han sido eliminados
-let lobosEliminados = gameState.impostorIndexes.every(idx => gameState.eliminatedPlayers.includes(idx));
-let ovejasRestantes = gameState.playersInGame.filter((_, idx) => 
-    !gameState.impostorIndexes.includes(idx) && !gameState.eliminatedPlayers.includes(idx)
-).length;
-let lobosVivos = gameState.impostorIndexes.filter(idx => !gameState.eliminatedPlayers.includes(idx)).length;
-
-if (lobosEliminados) {
-    // 🐑 ¡GANAN LAS OVEJAS! Todos los lobos descubiertos
-    terminarJuego('ciudadanos');
-} else if (ovejasRestantes <= lobosVivos) {
-    // 🐺 ¡GANAN LOS LOBOS! Quedan IGUAL O MÁS lobos que ovejas
-    console.log(`🐺 Victoria de lobos: ${lobosVivos} lobos vs ${ovejasRestantes} ovejas`);
-    terminarJuego('impostor');
-} else {
-    // El juego continúa
-    gameState.round++;
-    // 🔄 Reordenar aleatoriamente para la siguiente ronda
-    gameState.ordenPreguntas = generarOrdenPreguntas();
-    console.log('🔄 Nuevo orden de preguntas:', gameState.ordenPreguntas.map(idx => gameState.playersInGame[idx].nombre));
-    currentScreen = 'juego';
-    renderScreen();
-}
+            let lobosEliminados = gameState.impostorIndexes.every(idx => gameState.eliminatedPlayers.includes(idx));
+            let ovejasRestantes = gameState.playersInGame.filter((_, idx) => 
+                !gameState.impostorIndexes.includes(idx) && !gameState.eliminatedPlayers.includes(idx)
+            ).length;
+            let lobosVivos = gameState.impostorIndexes.filter(idx => !gameState.eliminatedPlayers.includes(idx)).length;
+            
+            if (lobosEliminados) {
+                terminarJuego('ciudadanos');
+            } else if (ovejasRestantes <= lobosVivos) {
+                terminarJuego('impostor');
+            } else {
+                gameState.round++;
+                gameState.ordenPreguntas = generarOrdenPreguntas();
+                currentScreen = 'juego';
+                renderScreen();
+            }
         };
     });
     
@@ -2725,72 +2714,82 @@ function terminarJuego(ganador) {
     renderFinRonda(ganador);
 }
 
-// ---------- FIN DE RONDA (MEJORADO - CON MENSAJES ADAPTADOS) ----------
+// ---------- FIN DE RONDA (CON ESTILO MEJORADO Y PUNTOS SIMPLIFICADOS) ----------
 function renderFinRonda(ganador) {
     // Verificar si TODOS los lobos han sido eliminados
     let todosLobosEliminados = gameState.impostorIndexes.every(idx => gameState.eliminatedPlayers.includes(idx));
     
     let mensaje = (ganador === 'ciudadanos' || todosLobosEliminados)
-        ? '🎉 ¡VICTORIA! El rebaño se salva.' 
-        : '🐺 ¡DERROTA! Los lobos devoran el rebaño.';
+        ? '🎉 ¡VICTORIA DE LAS OVEJAS!' 
+        : '🐺 ¡DERROTA! LOS LOBOS DEVORAN EL REBAÑO';
     
     // Color de fondo según el ganador
     let fondoGradiente = (ganador === 'ciudadanos' || todosLobosEliminados)
         ? 'linear-gradient(135deg, #00b09b, #96c93d)'  // Verde para ovejas
         : 'linear-gradient(135deg, #f43b47, #453a94)'; // Rojo/oscuro para lobos
     
+    // Texto de puntos según el ganador
+    let puntosTexto = (ganador === 'ciudadanos' || todosLobosEliminados)
+        ? '🐑 OVEJAS +2 ⭐'
+        : `🐺 ${gameState.impostorIndexes.length === 1 ? 'LOBO' : 'LOBOS'} +5 ⭐`;
+    
     let impostorNames = gameState.impostorIndexes.map(idx => gameState.playersInGame[idx].nombre).join(', ');
     
     // Adaptar el mensaje según si hay uno o múltiples lobos
-    let lobosInfo = '';
-    let lobosTitulo = '';
+    let lobosTitulo = gameState.impostorIndexes.length === 1 
+        ? '🐺 El Lobo era:' 
+        : '🐺 Los Lobos eran:';
     
-    if (gameState.impostorIndexes.length === 1) {
-        lobosTitulo = '🐺 El Lobo era:';
-        lobosInfo = '';
-    } else {
-        lobosTitulo = '🐺 Los Lobos eran:';
-        lobosInfo = `<p style="color: #a0a0a0; margin-top: 5px;">Había ${gameState.impostorIndexes.length} lobos en la partida</p>`;
-    }
+    let lobosInfo = gameState.impostorIndexes.length > 1 
+        ? `<p style="color: #a0a0a0; margin-top: 5px;">Había ${gameState.impostorIndexes.length} lobos en la partida</p>` 
+        : '';
     
     let html = `
-        <div class="screen animate-fade-in" style="justify-content: center; text-align: center; gap:20px;">
-            <div style="background: ${fondoGradiente}; border-radius: 30px; padding: 30px; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <h1 style="color: white; font-size: 2.2rem; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 15px;">
+        <div class="screen" style="padding: 15px; justify-content: center;">
+            <!-- Tarjeta principal de resultado -->
+            <div style="background: ${fondoGradiente}; border-radius: 30px; padding: 25px; margin: 0; 
+                        box-shadow: 0 15px 30px rgba(0,0,0,0.5); border: 2px solid white;">
+                
+                <h1 style="color: white; font-size: 1.8rem; font-weight: bold; text-align: center; 
+                          text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 20px;">
                     ${mensaje}
                 </h1>
-                <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin: 15px 0;">
-                    <p style="color: #ffd700; font-size: 1.2rem; margin-bottom: 5px;">${lobosTitulo}</p>
-                    <p style="color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.5);">
+                
+                <!-- Información del lobo/lobos -->
+                <div class="glass-card" style="margin: 15px 0; background: rgba(0,0,0,0.3);">
+                    <p style="color: #ffd700; font-size: 1.1rem; margin-bottom: 5px;">${lobosTitulo}</p>
+                    <p style="color: white; font-size: 1.8rem; font-weight: bold; text-align: center;
+                              text-shadow: 0 0 10px rgba(255,255,255,0.5);">
                         ${impostorNames}
                     </p>
                     ${lobosInfo}
                 </div>
-                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 10px;">
-                    <p style="color: white; font-size: 1.2rem;">Palabra: <strong style="color: #ffd700;">${gameState.palabraSecreta}</strong></p>
-                    <p style="color: #e0e0e0;">Categoría: ${gameState.categoriaSecreta}</p>
+                
+                <!-- Palabra y categoría -->
+                <div style="background: rgba(255,255,255,0.15); border-radius: 20px; padding: 15px; margin: 15px 0;
+                            border: 1px solid rgba(255,255,255,0.3);">
+                    <p style="color: white; font-size: 1.1rem; margin-bottom: 5px;">📝 Palabra secreta:</p>
+                    <p style="color: #ffd700; font-size: 2rem; font-weight: bold; text-align: center;">
+                        ${gameState.palabraSecreta}
+                    </p>
+                    <p style="color: #e0e0e0; text-align: center; margin-top: 5px;">
+                        📁 ${gameState.categoriaSecreta}
+                    </p>
+                </div>
+                
+                <!-- Puntos (simplificado) -->
+                <div class="order-container" style="margin: 15px 0; text-align: center; background: #2a2a3a;">
+                    <p style="color: white; font-size: 1.2rem; margin-bottom: 5px;">🏆 PUNTOS</p>
+                    <p style="color: #ffd700; font-size: 2.2rem; font-weight: bold;">${puntosTexto}</p>
                 </div>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 20px; border: 2px solid #3a3a4a;">
-                <h3 style="color: white; font-size: 1.5rem; margin-bottom: 15px;">📊 Puntos</h3>
-                <div style="display: flex; justify-content: space-around; gap: 10px;">
-                    <div style="background: #2a2a3a; border-radius: 15px; padding: 15px; flex: 1;">
-                        <div style="color: #4CAF50; font-size: 1.2rem;">🐑 Ovejas</div>
-                        <div style="color: white; font-size: 1.5rem; font-weight: bold;">+2 c/u</div>
-                    </div>
-                    <div style="background: #2a2a3a; border-radius: 15px; padding: 15px; flex: 1;">
-                        <div style="color: #f44336; font-size: 1.2rem;">🐺 Lobo/s</div>
-                        <div style="color: white; font-size: 1.5rem; font-weight: bold;">+5 c/u</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                <button class="btn btn-primary animate-pulse" id="nuevaPartida" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <!-- Botones de acción -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <button class="btn-modern" id="nuevaPartida" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px;">
                     🔄 Jugar otra ronda
                 </button>
-                <button class="btn btn-secondary" id="menuPrincipal">
+                <button class="btn-modern" id="menuPrincipal" style="background: #2a2a3a; padding: 12px;">
                     🏠 Volver al Corral
                 </button>
             </div>
