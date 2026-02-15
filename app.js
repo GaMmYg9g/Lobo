@@ -329,7 +329,7 @@ let tutorialEnCurso = false;
 let tutorialEsperandoInteraccion = false;
 let tutorialListenersActivos = [];
 
-// ---------- PASOS DEL TUTORIAL INTERACTIVO (ACTUALIZADO) ----------
+// ---------- PASOS DEL TUTORIAL INTERACTIVO (CORREGIDO) ----------
 const pasosTutorial = [
     {
         id: 1,
@@ -337,7 +337,7 @@ const pasosTutorial = [
         descripcion: "Vamos a aprender a jugar. Te guiaré paso a paso.",
         imagen: "🐺🐑",
         pantalla: "menu",
-        accion: "esperar", // ✅ Esto es correcto
+        accion: "esperar",
         elemento: null
     },
     {
@@ -353,7 +353,7 @@ const pasosTutorial = [
     {
         id: 3,
         titulo: "✏️ Escribe un nombre",
-        descripcion: "Escribe cualquier nombre (ej: 'Jugador1') y toca 'Guardar'",
+        descripcion: "Escribe 'Jugador1' y toca 'Guardar'",
         imagen: "✏️",
         pantalla: "addPlayer",
         accion: "escribirYGuardar",
@@ -365,7 +365,7 @@ const pasosTutorial = [
     {
         id: 4,
         titulo: "🐑 Ver el Rebaño",
-        descripcion: "Ahora toca el botón '🐑 Rebaño 🐑' para ver los jugadores",
+        descripcion: "Ahora toca el botón '🐑 Rebaño' para ver los jugadores",
         imagen: "🐑",
         pantalla: "menu",
         accion: "clic",
@@ -385,7 +385,7 @@ const pasosTutorial = [
     {
         id: 6,
         titulo: "⚙️ Configurar Partida",
-        descripcion: "Toca '⚙️ Configurar Partida' para ajustar el juego",
+        descripcion: "Toca '⚙️ Configurar' para ajustar el juego",
         imagen: "⚙️",
         pantalla: "menu",
         accion: "clic",
@@ -401,7 +401,7 @@ const pasosTutorial = [
         accion: "moverSlider",
         elemento: "impRange",
         valorObjetivo: 2,
-        feedback: "¡Así se hace! Ahora verás que hay 2 lobos y 1 oveja"
+        feedback: "¡Así se hace! Ahora hay 2 lobos"
     },
     {
         id: 8,
@@ -432,7 +432,7 @@ const pasosTutorial = [
         pantalla: "gameSetup",
         accion: "clic",
         elemento: "guardarConfigBtn",
-        feedback: "✅ Configuración guardada. Bien hecho"
+        feedback: "✅ Configuración guardada"
     },
     {
         id: 11,
@@ -446,77 +446,66 @@ const pasosTutorial = [
     },
     {
         id: 12,
-        titulo: "▶️ Iniciar Partida",
-        descripcion: "Toca '▶ Iniciar Partida' para comenzar",
+        titulo: "▶️ Iniciar Partida de Prueba",
+        descripcion: "Toca '▶ Iniciar Partida' para comenzar la partida de prueba",
         imagen: "▶️",
         pantalla: "menu",
-        accion: "clic",
+        accion: "clicTutorialIniciar",
         elemento: "btnStartGame",
-        feedback: "¡Comenzamos! Ahora verás la asignación de roles"
+        feedback: "¡Comenzamos! Verás la asignación de roles"
     },
     {
         id: 13,
         titulo: "🎭 Mostrar Rol",
         descripcion: "Toca '✨ Mostrar Rol' para revelar tu rol",
         imagen: "✨",
-        pantalla: "asignarRoles",
+        pantalla: "asignarRolesTutorial",
         accion: "clic",
-        elemento: "revelarRol",
+        elemento: "revelarRolTutorial",
         feedback: "¡Mira qué rol te tocó!"
     },
     {
         id: 14,
         titulo: "🐺 Rol de Lobo",
-        descripcion: "Toca 'Aceptar y pasar' para continuar",
+        descripcion: "Toca 'Continuar' para seguir",
         imagen: "🐺",
-        pantalla: "asignarRoles",
+        pantalla: "asignarRolesTutorial",
         accion: "clic",
-        elemento: "siguienteRol",  // ✅ Esto debe ser "siguienteRol"
-        feedback: "Bien. Ahora pasamos al siguiente jugador"
+        elemento: "siguienteRolTutorial",
+        feedback: "Bien. Pasamos al siguiente"
     },
     {
         id: 15,
         titulo: "🐑 Rol de Oveja",
-        descripcion: "Este es el rol de oveja. Toca 'Aceptar y pasar'",
+        descripcion: "Toca 'Continuar' para seguir",
         imagen: "🐑",
-        pantalla: "asignarRoles",
+        pantalla: "asignarRolesTutorial",
         accion: "clic",
-        elemento: "siguienteRol",
-        feedback: "Perfecto. Ya todos tienen su rol"
+        elemento: "siguienteRolTutorial",
+        feedback: "Perfecto. Todos tienen rol"
     },
     {
         id: 16,
         titulo: "❓ Ronda de Preguntas",
-        descripcion: "Aquí ves el orden de preguntas. Toca '🗳️ Iniciar Votación'",
+        descripcion: "Toca '🗳️ Iniciar Votación'",
         imagen: "🔄",
-        pantalla: "juego",
+        pantalla: "juegoTutorial",
         accion: "clic",
-        elemento: "abrirVotacionBtn",
+        elemento: "abrirVotacionBtnTutorial",
         feedback: "Muy bien. Vamos a votar"
     },
     {
         id: 17,
-        titulo: "🗳️ Votar",
-        descripcion: "Toca el nombre del Jugador 1 para votar (es el lobo de ejemplo)",
+        titulo: "🗳️ Ver Resultado",
+        descripcion: "Toca '🔍 Resultado' para ver qué pasó",
         imagen: "🗳️",
-        pantalla: "votacion",
-        accion: "clicEnJugador",
-        elemento: "vote-player-card",
-        indiceJugador: 0,
-        feedback: "¡Correcto! Has emitido tu voto"
-    },
-    {
-        id: 18,
-        titulo: "📊 Ver Resultado",
-        descripcion: "Toca '🔍 Ver Resultado' para ver qué pasó",
-        imagen: "📊",
-        pantalla: "votacion",
+        pantalla: "votacionTutorial",
         accion: "clic",
-        elemento: "finalizarVotacionBtn",
+        elemento: "finalizarVotacionBtnTutorial",
         feedback: "¡Mira el resultado!"
     },
     {
-        id: 19,
+        id: 18,
         titulo: "🎉 Fin de la Partida",
         descripcion: "Toca 'Cerrar' para continuar",
         imagen: "🎉",
@@ -526,37 +515,35 @@ const pasosTutorial = [
         feedback: "¡Excelente!"
     },
     {
-        id: 20,
+        id: 19,
         titulo: "📊 Ver Estadísticas",
-        descripcion: "Toca '📊 Estadísticas' para ver el resumen de tus partidas",
+        descripcion: "Toca '📊 Estadísticas'",
         imagen: "📊",
         pantalla: "menu",
         accion: "clic",
         elemento: "btnStats",
-        feedback: "¡Bien! Aquí puedes ver todas tus estadísticas"
+        feedback: "¡Bien! Aquí están tus estadísticas"
     },
     {
-        
-        id: 21,
+        id: 20,
         titulo: "📊 Tabla de Estadísticas",
-        descripcion: "Observa las columnas: 🐺 Victorias como Lobo, 🐑 Victorias como Oveja, ⭐ Puntos totales",
+        descripcion: "Observa las columnas: 🐺 Victorias Lobo, 🐑 Victorias Oveja, ⭐ Puntos",
         imagen: "📋",
         pantalla: "stats",
-        accion: "temporizador",  // Cambiado de "esperar" a "temporizador"
-        tiempo: 8, // 8 segundos para ver la tabla
-        feedback: "Tiempo completado. Continuando..."
-
+        accion: "temporizador",
+        tiempo: 8,
+        feedback: "Tiempo completado"
     },
     {
-        id: 22,
+        id: 21,
         titulo: "🎉 ¡Tutorial Completado!",
-        descripcion: "¡Ya sabes jugar! Puedes repetir el tutorial cuando quieras desde el botón naranja.",
+        descripcion: "¡Ya sabes jugar! Puedes repetir el tutorial cuando quieras.",
         imagen: "🎉",
         pantalla: "menu",
         accion: "final",
-       feedback: "¡A disfrutar el juego!"
+        feedback: "¡A disfrutar el juego!"
     }
-];
+]; 
 
 let players = JSON.parse(localStorage.getItem('undercover_players')) || [];
 
@@ -1113,7 +1100,7 @@ function iniciarPartida() {
     renderScreen();
 }
 
-// ---------- ASIGNAR ROLES ----------
+// ---------- ASIGNAR ROLES (CON ESTILO MEJORADO) ----------
 function renderAsignarRoles() {
     if(gameState.currentRolIndex >= gameState.playersInGame.length) {
         currentScreen = 'juego';
@@ -1135,40 +1122,64 @@ function renderAsignarRoles() {
         if (gameState.impostorVeCategoria) {
             contenidoRol = `
                 <div style="text-align: center;">
-                    <p class="impostor-msg animate-glow" style="font-size: 2rem; margin-bottom: 20px;">🐺 ERES EL LOBO</p>
-                    <div style="background: rgba(255,215,0,0.2); border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0;">
+                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
+                    <div style="background: rgba(255,215,0,0.15); border: 3px solid #ffd700; border-radius: 25px; padding: 20px; margin: 15px 0; box-shadow: 0 0 30px rgba(255,215,0,0.3);">
                         <p style="color: #ffd700; font-size: 1.2rem; margin-bottom: 5px;">📁 Categoría de la palabra:</p>
-                        <p style="color: white; font-size: 2rem; font-weight: bold;">${gameState.categoriaSecreta}</p>
+                        <p style="color: white; font-size: 2.5rem; font-weight: bold; text-shadow: 0 0 15px #ffd700;">${gameState.categoriaSecreta}</p>
                         <p style="color: #a0a0a0; font-size: 0.9rem; margin-top: 10px;">(Tienes que adivinar la palabra exacta)</p>
                     </div>
                 </div>
             `;
         } else {
-            contenidoRol = '<p class="impostor-msg animate-glow" style="font-size: 2rem;">¡🐺 ERES EL LOBO! Evita ser descubierto por las OVEJAS</p>';
+            contenidoRol = `
+                <div style="text-align: center;">
+                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
+                    <div style="background: rgba(255,0,0,0.1); border: 3px solid #ff6b6b; border-radius: 25px; padding: 20px; margin: 15px 0;">
+                        <p style="color: white; font-size: 1.5rem;">¡Oculta tu identidad!</p>
+                        <p style="color: #a0a0a0; font-size: 1rem;">Las ovejas tienen la palabra, tú debes descubrirla.</p>
+                    </div>
+                </div>
+            `;
         }
     } else {
         contenidoRol = `
             <div style="text-align: center;">
-                <p style="color: #4CAF50; font-size: 1.2rem; margin-bottom: 10px;">🐑 ¡ERES UNA OVEJA! Encuentra al LOBO antes de que sea tarde.</p>
-                <div style="background: rgba(102,126,234,0.2); border: 2px solid #667eea; border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="color: white; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px;">${gameState.palabraSecreta}</p>
-                    <p style="color: #ffd700; font-size: 1.1rem;">📁 Categoría: ${gameState.categoriaSecreta}</p>
+                <p style="color: #4CAF50; font-size: 1.5rem; margin-bottom: 10px; text-shadow: 0 0 10px #00ff00;">🐑 ¡ERES UNA OVEJA!</p>
+                <div style="background: rgba(102,126,234,0.15); border: 3px solid #667eea; border-radius: 25px; padding: 25px; margin: 15px 0; box-shadow: 0 0 30px rgba(102,126,234,0.3);">
+                    <p style="color: white; font-size: 2.8rem; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 20px #667eea;">${gameState.palabraSecreta}</p>
+                    <p style="color: #ffd700; font-size: 1.2rem;">📁 Categoría: ${gameState.categoriaSecreta}</p>
                 </div>
             </div>
         `;
     }
     
+    // Barra de progreso de asignación
+    let progreso = ((gameState.currentRolIndex + 1) / gameState.playersInGame.length) * 100;
+    
     let html = `
-        <div class="screen animate-fade-in" style="justify-content: center;">
-            <div class="rol-card" id="rolCard" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a);">
-                <h2 id="playerNameDisplay" class="animate-float" style="font-size: 2.5rem; color: white; margin-bottom: 20px;">${jugador.nombre}</h2>
+        <div class="screen" style="justify-content: center; padding: 15px;">
+            <!-- Barra de progreso -->
+            <div style="background: rgba(255,255,255,0.1); border-radius: 30px; height: 8px; margin: 10px 0 20px 0;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: ${progreso}%; height: 8px; border-radius: 30px; transition: width 0.3s ease;"></div>
+            </div>
+            <p style="color: #a0a0a0; text-align: center; margin-bottom: 10px;">Jugador ${gameState.currentRolIndex + 1} de ${gameState.playersInGame.length}</p>
+            
+            <!-- Tarjeta de rol -->
+            <div class="rol-card" id="rolCard" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a); border: 3px solid #667eea; border-radius: 40px; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                <h2 id="playerNameDisplay" class="animate-float" style="font-size: 2.8rem; color: white; margin-bottom: 20px; text-shadow: 0 0 15px #667eea;">${jugador.nombre}</h2>
                 <div id="rolContent" style="display: none;">
                     ${contenidoRol}
                 </div>
             </div>
-            <button class="btn btn-primary animate-pulse" id="revelarRol" style="background: linear-gradient(135deg, #667eea, #764ba2);">✨ Mostrar Rol</button>
-            <button class="btn btn-success" id="siguienteRol" style="display: none; background: linear-gradient(135deg, #00b09b, #96c93d);">Aceptar y pasar</button>
             
+            <!-- Botones con estilo -->
+            <button class="btn-modern" id="revelarRol" style="margin-top: 20px; padding: 15px; font-size: 1.2rem;">
+                ✨ Mostrar Rol
+            </button>
+            
+            <button class="btn-modern" id="siguienteRol" style="display: none; margin-top: 15px; background: linear-gradient(135deg, #00b09b, #96c93d); padding: 15px; font-size: 1.2rem;">
+                ➡️ Aceptar y pasar
+            </button>
         </div>
     `;
     app.innerHTML = html;
@@ -1653,16 +1664,16 @@ function navegarAPantallaTutorial(pantalla, paso) {
     else if (pantalla === 'addPlayer') renderAddPlayerTutorial();
     else if (pantalla === 'groupManager') renderGroupManagerTutorial();
     else if (pantalla === 'gameSetup') renderGameSetupTutorial();
-    else if (pantalla === 'stats') renderStatsTutorial();  // ✅ AÑADIR ESTA LÍNEA
-    else if (pantalla === 'asignarRoles') renderAsignarRolesTutorial();
-    else if (pantalla === 'juego') renderJuegoTutorial();
-    else if (pantalla === 'votacion') renderVotacionTutorial();
+    else if (pantalla === 'stats') renderStatsTutorial();
+    else if (pantalla === 'asignarRolesTutorial') renderAsignarRolesTutorial();
+    else if (pantalla === 'juegoTutorial') renderJuegoTutorial();
+    else if (pantalla === 'votacionTutorial') renderVotacionTutorial();
     else if (pantalla === 'modal') {
-        // Mantener la pantalla actual, solo mostrar modal
+        // Mantener la pantalla actual
     }
 }
 
-// ---------- CONFIGURAR LISTENER SEGÚN ACCIÓN ----------
+/// ---------- CONFIGURAR LISTENER SEGÚN ACCIÓN ----------
 function configurarListenerPaso(paso) {
     eliminarListenersTutorial();
     
@@ -1670,6 +1681,9 @@ function configurarListenerPaso(paso) {
         switch (paso.accion) {
             case 'clic':
                 configurarListenerClic(paso);
+                break;
+            case 'clicTutorialIniciar':
+                configurarListenerClicTutorialIniciar(paso);
                 break;
             case 'escribirYGuardar':
                 configurarListenerEscribirYGuardar(paso);
@@ -1687,8 +1701,7 @@ function configurarListenerPaso(paso) {
                 configurarListenerClicEnJugador(paso);
                 break;
             case 'temporizador':
-                // No hacer nada, el temporizador se maneja aparte
-                console.log(`⏳ Paso con temporizador de ${paso.tiempo} segundos`);
+                console.log(`⏳ Paso ${paso.id} con temporizador`);
                 break;
         }
     }, 200);
@@ -1733,6 +1746,47 @@ function configurarListenerClic(paso) {
         setTimeout(() => {
             tutorialPasoActual++;
             mostrarPasoTutorial();
+        }, 500);
+    };
+    
+    elemento.addEventListener('click', listener);
+    tutorialListenersActivos.push({elemento, tipo: 'click', listener});
+}
+
+// ---------- LISTENER ESPECIAL PARA INICIAR PARTIDA EN TUTORIAL ----------
+function configurarListenerClicTutorialIniciar(paso) {
+    let elemento = document.getElementById(paso.elemento);
+    if (!elemento) return;
+    
+    elemento.style.animation = 'pulse 1s infinite';
+    elemento.style.border = '4px solid #ffd700';
+    
+    let listener = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        elemento.style.animation = '';
+        elemento.style.border = '';
+        elemento.removeEventListener('click', listener);
+        
+        let overlay = document.getElementById('tutorialOverlay');
+        if (overlay) overlay.remove();
+        
+        mostrarToast(paso.feedback);
+        
+        setTimeout(() => {
+            tutorialPasoActual++;
+            renderAsignarRolesTutorial();
+            
+            setTimeout(() => {
+                let siguientePaso = pasosTutorial[tutorialPasoActual];
+                if (siguientePaso) {
+                    mostrarOverlayTutorial(siguientePaso);
+                    if (siguientePaso.accion !== 'esperar' && siguientePaso.accion !== 'final') {
+                        configurarListenerPaso(siguientePaso);
+                    }
+                }
+            }, 300);
         }, 500);
     };
     
@@ -2174,18 +2228,18 @@ styleSheet.textContent += animacionExtra;
 function renderMenuTutorial() {
     currentScreen = 'menu';
     let html = `
-        <div class="screen">
-            <h1>🐑Ovejas y Lobos🐺</h1>
-            <p class="subtitle">¡Modo Tutorial Activo!</p>
+        <div class="screen" style="padding: 15px;">
+            <h1 class="neon-title">🐑Ovejas y Lobos🐺</h1>
+            <p class="subtitle" style="color: #ffd700; text-align: center;">🎓 MODO TUTORIAL ACTIVO</p>
             
-            <div class="menu-grid" style="gap: 8px;">  <!-- Antes: gap: 10px -->
-    <button class="btn btn-primary" id="btnAddPlayer">➕ Agregar Jugador</button>
-    <button class="btn btn-primary" id="btnGroupManager">🐑 Rebaño 🐑</button>
-    <button class="btn btn-primary" id="btnDictionary">📚 Diccionario</button>
-    <button class="btn btn-primary" id="btnGameSetup">⚙️ Configurar Partida</button>
-    <button class="btn btn-primary" id="btnStats">📊 Estadísticas</button>
-    <button class="btn btn-success" id="btnStartGame">▶ Iniciar Partida</button>
-</div>
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 8px; margin-top: 20px;">
+                <button class="btn-modern" id="btnAddPlayer">➕ Agregar Jugador</button>
+                <button class="btn-modern" id="btnGroupManager">🐑 Rebaño</button>
+                <button class="btn-modern" id="btnDictionary">📚 Diccionario</button>
+                <button class="btn-modern" id="btnGameSetup">⚙️ Configurar</button>
+                <button class="btn-modern" id="btnStats">📊 Estadísticas</button>
+                <button class="btn-modern" id="btnStartGame" style="background: linear-gradient(135deg, #00b09b, #96c93d);">▶ Iniciar Partida</button>
+            </div>
         </div>
     `;
     app.innerHTML = html;
@@ -2194,13 +2248,17 @@ function renderMenuTutorial() {
 // ---------- RENDER ADD PLAYER PARA TUTORIAL ----------
 function renderAddPlayerTutorial() {
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>Nuevo Jugador (Tutorial)</h2>
-            <input type="text" id="newPlayerName" placeholder="Escribe un nombre...">
-            <button class="btn btn-primary" id="saveNewPlayer">Guardar</button>
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">➕ Nuevo Jugador</h2>
+            
+            <div class="glass-card" style="margin: 20px 0;">
+                <input type="text" id="newPlayerName" placeholder="Escribe 'Jugador1'" 
+                       style="width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #667eea; 
+                              background: rgba(255,255,255,0.1); color: white; font-size: 1.1rem;">
             </div>
+            
+            <button class="btn-modern" id="saveNewPlayer" style="margin: 10px 0;">💾 Guardar</button>
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a;">🔙 Volver</button>
         </div>
     `;
     app.innerHTML = html;
@@ -2209,25 +2267,24 @@ function renderAddPlayerTutorial() {
 // ---------- RENDER GROUP MANAGER PARA TUTORIAL ----------
 function renderGroupManagerTutorial() {
     let playersList = players.map((p, index) => `
-        <div class="player-item">
-            <span class="player-name">${p.nombre}</span>
-            <div class="player-actions">
-                <button class="edit-player" data-index="${index}">✏️</button>
-                <button class="delete-player" data-index="${index}">❌</button>
+        <div class="vote-card-modern" style="margin: 5px 0;">
+            <div class="vote-avatar-modern">${p.nombre.charAt(0).toUpperCase()}</div>
+            <div class="vote-info-modern">
+                <div class="vote-name-modern">${p.nombre}</div>
+                <div class="vote-status-modern">🐑 Oveja</div>
             </div>
         </div>
-    `).join('') || '<p style="color: gray;">No hay jugadores. Agrega uno.</p>';
+    `).join('') || '<p style="color: gray; text-align: center;">No hay jugadores</p>';
 
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>🐑 Rebaño 🐑 (Tutorial)</h2>
-            <button class="btn btn-primary" id="addNewFromGroup">➕ Nuevo</button>
-            <div class="players-list">
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title">🐑 Rebaño</h2>
+            
+            <div class="glass-card" style="max-height: 400px; overflow-y: auto; padding: 10px;">
                 ${playersList}
             </div>
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
-            </div>
+            
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 15px;">🔙 Volver</button>
         </div>
     `;
     app.innerHTML = html;
@@ -2238,237 +2295,249 @@ function renderGameSetupTutorial() {
     let totalJugadores = players.length;
     
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>⚙️ Configurar Partida (Tutorial)</h2>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title">⚙️ Configurar</h2>
             
-            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin: 0;">Configuración de la partida</h3>
-            </div>
-            
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 10px;">📊 Jugadores</h3>
-                <div style="display: flex; justify-content: space-between; background: #2a2a3a; border-radius: 15px; padding: 15px;">
-                    <span style="color: white;">Disponibles:</span>
-                    <span style="color: #ffd700; font-weight: bold;">${totalJugadores}</span>
+            <div class="order-container" style="margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>🐑 Jugadores:</span>
+                    <span style="color: #ffd700;">${totalJugadores}</span>
                 </div>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 15px;">🎭 Roles</h3>
+            <div class="glass-card" style="margin: 15px 0;">
+                <h3 style="color: white;">🐺 Lobos: <span id="impCountDisplay">1</span></h3>
+                <input type="range" id="impRange" min="1" max="3" value="1" step="1" style="width: 100%;">
                 
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span style="color: white;">🐺LOBO/S:</span>
-                        <span style="color: #ffd700;" id="impCountDisplay">1</span>
-                    </div>
-                    <input type="range" id="impRange" min="1" max="3" value="1" step="1" style="width: 100%;">
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; background: #2a2a3a; border-radius: 15px; padding: 15px;">
-                    <span style="color: white;">🐑OVEJAS:</span>
-                    <span style="color: #4CAF50;" id="ciudCountDisplay">${totalJugadores - 1}</span>
+                <div style="background: #2a2a3a; border-radius: 15px; padding: 15px; margin-top: 15px;">
+                    <span>🐑 Ovejas: <span style="color: #4CAF50;" id="ciudCountDisplay">${totalJugadores - 1}</span></span>
                 </div>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 15px;">Lobo 🐺</h3>
-                
-                <label style="display: flex; align-items: center; gap: 15px; background: #2a2a3a; border-radius: 15px; padding: 15px;">
+            <div class="glass-card" style="margin: 15px 0;">
+                <label style="display: flex; align-items: center; gap: 10px;">
                     <input type="checkbox" id="impostorVeCategoria" style="width: 20px; height: 20px;">
-                    <span style="color: white;">Mostrar la categoría al Lobo</span>
+                    <span>Mostrar categoría al Lobo</span>
                 </label>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 15px;">📁 Categoría</h3>
-                
-                <select id="categoriaSelect" style="width: 100%; padding: 15px; border-radius: 15px; background: #2a2a3a; color: white;">
-                    <option value="aleatoria">🎲 Categoría Aleatoria</option>
+            <div class="glass-card" style="margin: 15px 0;">
+                <select id="categoriaSelect" style="width: 100%; padding: 15px; border-radius: 15px; background: #2a2a3a; color: white; border: 2px solid #667eea;">
+                    <option value="aleatoria">🎲 Aleatoria</option>
                     <option value="Animales">📁 Animales</option>
                     <option value="Lugares">📁 Lugares</option>
-                    <option value="Ciudades">📁 Ciudades</option>
                 </select>
             </div>
             
-            <div style="background: linear-gradient(135deg, #00b09b, #96c93d); border-radius: 20px; padding: 20px; margin: 15px 0;">
-                <button id="guardarConfigBtn" style="background: white; color: #1a1a2e; border: none; border-radius: 30px; padding: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%;">
-                    💾 GUARDAR CONFIGURACIÓN
-                </button>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-secondary" style="flex: 1;" id="backToMenu">🔙 Volver</button>
-            </div>
+            <button class="btn-modern" id="guardarConfigBtn" style="background: linear-gradient(135deg, #00b09b, #96c93d);">💾 GUARDAR</button>
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 10px;">🔙 Volver</button>
         </div>
     `;
     app.innerHTML = html;
+    
+    // Listeners básicos para el tutorial
+    document.getElementById('impRange').addEventListener('input', function() {
+        document.getElementById('impCountDisplay').textContent = this.value;
+        document.getElementById('ciudCountDisplay').textContent = totalJugadores - this.value;
+    });
 }
 
 // ---------- RENDER STATS PARA TUTORIAL ----------
 function renderStatsTutorial() {
-    // Crear datos de ejemplo para mostrar en el tutorial
     let statsEjemplo = [
         { nombre: "Jugador 1", partidas: 5, victoriasImp: 2, victoriasCiud: 3, totalPuntos: 19 },
-        { nombre: "Jugador 2", partidas: 5, victoriasImp: 1, victoriasCiud: 4, totalPuntos: 14 },
-        { nombre: "Jugador 3", partidas: 5, victoriasImp: 2, victoriasCiud: 3, totalPuntos: 19 }
+        { nombre: "Jugador 2", partidas: 5, victoriasImp: 1, victoriasCiud: 4, totalPuntos: 14 }
     ];
     
-    let rows = statsEjemplo.map((p, idx) => {
-        let posClass = idx === 0 ? 'pos-1' : (idx === 1 ? 'pos-2' : 'pos-3');
-        return `
-            <div class="stats-row">
-                <span class="${posClass}">#${idx+1}</span>
-                <span class="stats-nombre">${p.nombre}</span>
-                <span class="stats-numero">${p.partidas}</span>
-                <span class="stats-numero">${p.victoriasImp}</span>
-                <span class="stats-numero">${p.victoriasCiud}</span>
-                <span class="stats-numero">${p.totalPuntos}</span>
+    let rows = statsEjemplo.map((p, idx) => `
+        <div class="vote-card-modern" style="margin: 5px 0;">
+            <div class="vote-avatar-modern" style="background: ${idx === 0 ? 'gold' : 'silver'};">#${idx+1}</div>
+            <div class="vote-info-modern">
+                <div class="vote-name-modern">${p.nombre}</div>
+                <div class="vote-status-modern">🐺 ${p.victoriasImp} • 🐑 ${p.victoriasCiud}</div>
             </div>
-        `;
-    }).join('');
+            <div style="color: #ffd700; font-weight: bold;">${p.totalPuntos} ⭐</div>
+        </div>
+    `).join('');
 
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>📊 Estadísticas (Tutorial)</h2>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title">📊 Estadísticas</h2>
             
-            <div class="stats-container">
-                <div class="stats-header-row">
-                    <span class="stats-header-item">#</span>
-                    <span class="stats-header-item">Nombre</span>
-                    <span class="stats-header-item">PJ</span>
-                    <span class="stats-header-item">🐺</span>
-                    <span class="stats-header-item">🐑</span>
-                    <span class="stats-header-item">⭐</span>
-                </div>
-                
-                <div class="stats-rows-container">
-                    ${rows}
-                </div>
+            <div class="glass-card" style="margin: 10px 0; display: flex; justify-content: space-around;">
+                <span>🐺 Lobo</span> <span>🐑 Oveja</span> <span>⭐ Puntos</span>
             </div>
             
-            <div class="stats-legend">
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">🐺</span> = Victorias como Lobo
-                </div>
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">🐑</span> = Victorias como Oveja
-                </div>
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">⭐</span> = Puntos totales
-                </div>
+            <div style="max-height: 400px; overflow-y: auto;">
+                ${rows}
             </div>
             
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
-            </div>
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 15px;">🔙 Volver</button>
         </div>
     `;
     app.innerHTML = html;
-    
-    // En el tutorial, cuando estén en la pantalla de stats, el overlay ya maneja el avance
 }
 
-// ---------- ASIGNAR ROLES (CON ESTILO MEJORADO) ----------
-function renderAsignarRoles() {
-    if(gameState.currentRolIndex >= gameState.playersInGame.length) {
-        currentScreen = 'juego';
-        renderScreen();
-        return;
-    }
-
-    let jugador = gameState.playersInGame[gameState.currentRolIndex];
-    let esImpostor = gameState.impostorIndexes.includes(gameState.currentRolIndex);
+// ---------- RENDER ASIGNAR ROLES PARA TUTORIAL ----------
+function renderAsignarRolesTutorial() {
+    let paso = pasosTutorial[tutorialPasoActual];
+    let esLobo = (paso && (paso.id === 13 || paso.id === 14));
     
-    console.log(`🎭 Mostrando rol a ${jugador.nombre}:`, {
-        esImpostor,
-        impostorVeCategoria: gameState.impostorVeCategoria,
-        categoria: gameState.categoriaSecreta
-    });
-    
-    let contenidoRol = '';
-    if (esImpostor) {
-        if (gameState.impostorVeCategoria) {
-            contenidoRol = `
-                <div style="text-align: center;">
-                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
-                    <div style="background: rgba(255,215,0,0.15); border: 3px solid #ffd700; border-radius: 25px; padding: 20px; margin: 15px 0; box-shadow: 0 0 30px rgba(255,215,0,0.3);">
-                        <p style="color: #ffd700; font-size: 1.2rem; margin-bottom: 5px;">📁 Categoría de la palabra:</p>
-                        <p style="color: white; font-size: 2.5rem; font-weight: bold; text-shadow: 0 0 15px #ffd700;">${gameState.categoriaSecreta}</p>
-                        <p style="color: #a0a0a0; font-size: 0.9rem; margin-top: 10px;">(Tienes que adivinar la palabra exacta)</p>
-                    </div>
-                </div>
-            `;
-        } else {
-            contenidoRol = `
-                <div style="text-align: center;">
-                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
-                    <div style="background: rgba(255,0,0,0.1); border: 3px solid #ff6b6b; border-radius: 25px; padding: 20px; margin: 15px 0;">
-                        <p style="color: white; font-size: 1.5rem;">¡Oculta tu identidad!</p>
-                        <p style="color: #a0a0a0; font-size: 1rem;">Las ovejas tienen la palabra, tú debes descubrirla.</p>
-                    </div>
-                </div>
-            `;
-        }
-    } else {
-        contenidoRol = `
-            <div style="text-align: center;">
-                <p style="color: #4CAF50; font-size: 1.5rem; margin-bottom: 10px; text-shadow: 0 0 10px #00ff00;">🐑 ¡ERES UNA OVEJA!</p>
-                <div style="background: rgba(102,126,234,0.15); border: 3px solid #667eea; border-radius: 25px; padding: 25px; margin: 15px 0; box-shadow: 0 0 30px rgba(102,126,234,0.3);">
-                    <p style="color: white; font-size: 2.8rem; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 20px #667eea;">${gameState.palabraSecreta}</p>
-                    <p style="color: #ffd700; font-size: 1.2rem;">📁 Categoría: ${gameState.categoriaSecreta}</p>
-                </div>
+    let contenidoRol = esLobo ? `
+        <div style="text-align: center;">
+            <p style="font-size: 2.5rem; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
+            <div style="background: rgba(255,215,0,0.15); border: 3px solid #ffd700; border-radius: 25px; padding: 20px;">
+                <p style="color: #ffd700;">📁 Categoría: Animales</p>
+                <p style="color: white;">(Debes adivinar la palabra)</p>
             </div>
-        `;
-    }
-    
-    // Barra de progreso de asignación
-    let progreso = ((gameState.currentRolIndex + 1) / gameState.playersInGame.length) * 100;
+        </div>
+    ` : `
+        <div style="text-align: center;">
+            <p style="color: #4CAF50; font-size: 2rem;">🐑 ERES UNA OVEJA</p>
+            <div style="background: rgba(102,126,234,0.15); border: 3px solid #667eea; border-radius: 25px; padding: 25px;">
+                <p style="color: white; font-size: 3rem; font-weight: bold;">LOBO</p>
+                <p style="color: #ffd700;">📁 Animales</p>
+            </div>
+        </div>
+    `;
     
     let html = `
         <div class="screen" style="justify-content: center; padding: 15px;">
-            <!-- Barra de progreso -->
-            <div style="background: rgba(255,255,255,0.1); border-radius: 30px; height: 8px; margin: 10px 0 20px 0;">
-                <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: ${progreso}%; height: 8px; border-radius: 30px; transition: width 0.3s ease;"></div>
-            </div>
-            <p style="color: #a0a0a0; text-align: center; margin-bottom: 10px;">Jugador ${gameState.currentRolIndex + 1} de ${gameState.playersInGame.length}</p>
-            
-            <!-- Tarjeta de rol -->
-            <div class="rol-card" id="rolCard" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a); border: 3px solid #667eea; border-radius: 40px; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-                <h2 id="playerNameDisplay" class="animate-float" style="font-size: 2.8rem; color: white; margin-bottom: 20px; text-shadow: 0 0 15px #667eea;">${jugador.nombre}</h2>
-                <div id="rolContent" style="display: none;">
-                    ${contenidoRol}
-                </div>
+            <div class="rol-card" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a); border: 3px solid #667eea; border-radius: 40px; padding: 30px;">
+                <h2 style="font-size: 2.5rem; color: white; text-align: center;">Jugador 1</h2>
+                <div style="margin-top: 20px;">${contenidoRol}</div>
             </div>
             
-            <!-- Botones con estilo -->
-            <button class="btn-modern" id="revelarRol" style="margin-top: 20px; padding: 15px; font-size: 1.2rem;">
-                ✨ Mostrar Rol
-            </button>
-            
-            <button class="btn-modern" id="siguienteRol" style="display: none; margin-top: 15px; background: linear-gradient(135deg, #00b09b, #96c93d); padding: 15px; font-size: 1.2rem;">
-                ➡️ Aceptar y pasar
-            </button>
+            ${esLobo ? 
+                '<button class="btn-modern" id="revelarRolTutorial" style="margin-top: 20px;">✨ Mostrar Rol</button>' : 
+                '<button class="btn-modern" id="siguienteRolTutorial" style="margin-top: 20px; background: linear-gradient(135deg, #00b09b, #96c93d);">➡️ Continuar</button>'
+            }
         </div>
     `;
     app.innerHTML = html;
+    
+    if (document.getElementById('revelarRolTutorial')) {
+        document.getElementById('revelarRolTutorial').addEventListener('click', () => {
+            SoundEffects.playRevealSound();
+            document.querySelector('.rol-card').innerHTML = `
+                <h2 style="font-size: 2.5rem; color: white;">Jugador 1</h2>
+                ${contenidoRol}
+                <button class="btn-modern" id="siguienteRolTutorial" style="margin-top: 20px; background: linear-gradient(135deg, #00b09b, #96c93d);">➡️ Continuar</button>
+            `;
+            
+            document.getElementById('siguienteRolTutorial').addEventListener('click', () => {
+                let overlay = document.getElementById('tutorialOverlay');
+                if (overlay) overlay.remove();
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            });
+        });
+    }
+    
+    if (document.getElementById('siguienteRolTutorial')) {
+        document.getElementById('siguienteRolTutorial').addEventListener('click', () => {
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            tutorialPasoActual++;
+            mostrarPasoTutorial();
+        });
+    }
+}
 
-    document.getElementById('revelarRol').addEventListener('click', () => {
-        SoundEffects.playRevealSound();
-        
-        let rolCard = document.getElementById('rolCard');
-        rolCard.classList.add('revealed');
-        
-        setTimeout(() => {
-            document.getElementById('playerNameDisplay').style.display = 'none';
-            document.getElementById('rolContent').style.display = 'block';
-            document.getElementById('revelarRol').style.display = 'none';
-            document.getElementById('siguienteRol').style.display = 'block';
-        }, 300);
-    });
+// ---------- RENDER JUEGO PARA TUTORIAL ----------
+function renderJuegoTutorial() {
+    let html = `
+        <div class="screen game-screen-modern" style="padding: 15px;">
+            <h2 class="neon-title">🔍 Juego en curso</h2>
+            <div class="round-indicator">⚔️ Ronda 1</div>
+            <div class="category-tag">📁 Animales</div>
+            
+            <div class="order-container">
+                <div class="order-title">🔄 Orden de preguntas</div>
+                <div class="order-names">Jugador 1 → Jugador 2 → Jugador 3</div>
+            </div>
+            
+            <div class="time-message">⏳ ¡TIEMPO PARA PREGUNTAR!</div>
+            
+            <button class="btn-modern" id="abrirVotacionBtnTutorial" style="margin-top: 15px;">🗳️ Iniciar Votación</button>
+        </div>
+    `;
+    app.innerHTML = html;
+}
 
-    document.getElementById('siguienteRol').addEventListener('click', () => {
-        gameState.currentRolIndex++;
-        renderAsignarRoles();
+// ---------- RENDER VOTACIÓN PARA TUTORIAL ----------
+function renderVotacionTutorial() {
+    let html = `
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title">🗳️ VOTACIÓN</h2>
+            <div class="round-indicator">Ronda 1</div>
+            
+            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2); margin: 10px 0; text-align: center;">
+                <div style="color: white;">🎯 VOTA AHORA</div>
+            </div>
+            
+            <div style="margin: 15px 0;">
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J1</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 1</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
+                    </div>
+                </div>
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J2</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 2</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
+                    </div>
+                </div>
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J3</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 3</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-modern" id="finalizarVotacionBtnTutorial" style="width: 100%;">🔍 Ver Resultado</button>
+        </div>
+    `;
+    app.innerHTML = html;
+}
+
+// ---------- MOSTRAR MODAL DE RESULTADO PARA TUTORIAL ----------
+function mostrarModalResultadoTutorial() {
+    let modal = document.createElement('div');
+    modal.id = 'tutorialModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.9);
+        z-index: 3500;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #00b09b, #96c93d); border-radius: 30px; padding: 30px; max-width: 350px; border: 3px solid white; text-align: center;">
+            <div style="font-size: 4rem;">🎉</div>
+            <h2 style="color: white;">¡LOBO DESCUBIERTO!</h2>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin: 15px 0;">
+                <p style="color: #ffd700;">🐺 El Lobo era: Jugador 1</p>
+            </div>
+            <button id="tutorialModalCloseBtn" class="btn-modern" style="width: 100%; background: white; color: #1a1a2e;">✖ Cerrar</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('tutorialModalCloseBtn').addEventListener('click', () => {
+        modal.remove();
+        tutorialPasoActual++;
+        mostrarPasoTutorial();
     });
 }
 
@@ -2510,77 +2579,90 @@ function cambiarPalabraDuranteJuego() {
 // ---------- RENDER JUEGO PARA TUTORIAL ----------
 function renderJuegoTutorial() {
     let html = `
-        <div class="screen game-screen-black animate-fade-in">
-            <h2 class="animate-float">🔍 Juego en curso</h2>
-            <p style="color: #aaa;">Ronda 1</p>
-            <p style="color: #ccc; text-align:center;">📁 Categoría: Animales</p>
+        <div class="screen game-screen-modern">
+            <h2 class="neon-title" style="font-size: 1.8rem;">🔍 Juego en curso</h2>
+            <div class="round-indicator">⚔️ Ronda 1</div>
+            <div class="category-tag">📁 Animales</div>
             
-            <div style="background: rgba(102,126,234,0.2); border: 2px solid #667eea; border-radius: 20px; padding: 15px; margin: 15px 0;">
-                <p style="color: #ffd700; font-size: 1rem; margin-bottom: 5px;">🔄 Orden de preguntas:</p>
-                <p style="color: white; font-size: 1.2rem; font-weight: bold;">Jugador 1 → Jugador 2 → Jugador 3</p>
+            <div class="order-container">
+                <div class="order-title">🔄 Orden de preguntas</div>
+                <div class="order-names">Jugador 1 → Jugador 2 → Jugador 3</div>
             </div>
             
-            <p style="color: #ccc; text-align:center;">¡TIEMPO PARA LAS PREGUNTAS!</p>
-            <button class="btn btn-primary" id="abrirVotacionBtn">🗳️ Iniciar Votación</button>
+            <div class="time-message">⏳ ¡TIEMPO PARA PREGUNTAR!</div>
+            
+            <button class="btn-modern" id="abrirVotacionBtnTutorial" style="margin: 5px 0;">
+                🗳️ Iniciar Votación
+            </button>
         </div>
     `;
     app.innerHTML = html;
+    
+    document.getElementById('abrirVotacionBtnTutorial').addEventListener('click', () => {
+        // Eliminar overlay
+        let overlay = document.getElementById('tutorialOverlay');
+        if (overlay) overlay.remove();
+        
+        // Avanzar al siguiente paso
+        tutorialPasoActual++;
+        renderVotacionTutorial();
+        
+        // Mostrar overlay del siguiente paso
+        setTimeout(() => {
+            let siguientePaso = pasosTutorial[tutorialPasoActual];
+            if (siguientePaso) {
+                mostrarOverlayTutorial(siguientePaso);
+                if (siguientePaso.accion !== 'esperar' && siguientePaso.accion !== 'final') {
+                    configurarListenerPaso(siguientePaso);
+                }
+            }
+        }, 300);
+    });
 }
 
-// ---------- RENDER VOTACIÓN PARA TUTORIAL ----------
+/// ---------- RENDER VOTACIÓN PARA TUTORIAL ----------
 function renderVotacionTutorial() {
     let html = `
-        <div class="screen animate-fade-in">
-            <h2 class="animate-float">🗳️ VOTACIÓN - Ronda 1</h2>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 1.8rem;">🗳️ VOTACIÓN</h2>
+            <div class="round-indicator">Ronda 1</div>
             
-            <div class="animate-glow" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 20px; margin: 10px 0; text-align: center;">
-                <div style="font-size: 1.2rem; color: white; margin-bottom: 5px;">🎯 Pasa el telefono al proximo jugador:</div>
-                <div style="font-size: 2rem; color: white; font-weight: bold;">Jugador 1</div>
+            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2); margin: 10px 0;">
+                <div style="color: white; font-size: 1rem;">🎯 Le toca votar a: Jugador 1</div>
             </div>
             
-            <p style="color: #a0a0a0; text-align: center; margin: 10px 0;">Toca el nombre de tu sospechoso</p>
-            
-            <div class="players-list">
-                <div class="vote-player-card" style="background: #2a2a3a;">
-                    <div class="vote-player-avatar">J</div>
-                    <div class="vote-player-info">
-                        <div class="vote-player-name">Jugador 1</div>
-                        <div class="vote-player-status">👤 Jugador</div>
+            <div class="players-list" style="margin: 10px 0;">
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J1</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 1</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
                     </div>
                 </div>
-                <div class="vote-player-card" style="background: #2a2a3a;">
-                    <div class="vote-player-avatar">J</div>
-                    <div class="vote-player-info">
-                        <div class="vote-player-name">Jugador 2</div>
-                        <div class="vote-player-status">👤 Jugador</div>
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J2</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 2</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
                     </div>
                 </div>
-                <div class="vote-player-card" style="background: #2a2a3a;">
-                    <div class="vote-player-avatar">J</div>
-                    <div class="vote-player-info">
-                        <div class="vote-player-name">Jugador 3</div>
-                        <div class="vote-player-status">👤 Jugador</div>
+                <div class="vote-card-modern">
+                    <div class="vote-avatar-modern">J3</div>
+                    <div class="vote-info-modern">
+                        <div class="vote-name-modern">Jugador 3</div>
+                        <div class="vote-status-modern">👤 Jugador</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Botones más pequeños y compactos -->
-<div style="display: flex; gap: 8px; margin-top: 15px; justify-content: center;">
-    <button class="btn btn-secondary" id="reiniciarVotosBtn" style="padding: 10px 15px; font-size: 0.9rem; border-radius: 25px; width: auto; min-width: 100px; flex: 0 1 auto;">
-        🔄 Reiniciar
-    </button>
-    <button class="btn btn-primary" id="finalizarVotacionBtn" style="padding: 10px 15px; font-size: 0.9rem; border-radius: 25px; width: auto; min-width: 100px; flex: 0 1 auto;">
-        🔍 Ver Resultado
-    </button>
-</div>
+            <button class="btn-modern" id="finalizarVotacionBtnTutorial" style="width: 100%;">
+                🔍 Ver Resultado
+            </button>
+        </div>
     `;
     app.innerHTML = html;
     
-    // Simular que ya hay votos para que el botón "Ver Resultado" funcione
-    // Configurar el botón "Ver Resultado" para el tutorial
-    let finalizarBtn = document.getElementById('finalizarVotacionBtn');
-    finalizarBtn.addEventListener('click', () => {
-        // Mostrar modal de resultado para el tutorial
+    document.getElementById('finalizarVotacionBtnTutorial').addEventListener('click', () => {
         mostrarModalResultadoTutorial();
     });
 }
