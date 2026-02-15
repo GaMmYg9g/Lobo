@@ -227,6 +227,56 @@ const SoundEffects = {
     }
 };
 
+// ---------- SISTEMA DE VERSIONES PROFESIONAL ----------
+const VERSION_HISTORY = {
+    actual: "2.0.0",
+    historial: [
+        {
+            version: "2.0.0",
+            nombre: "Beta",
+            fecha: "2026-02-15",
+            tipo: "major",
+            cambios: [
+                "🔄 Sistema de cambiar palabra durante el juego",
+                "🎮 Tutorial interactivo completo (22 pasos)",
+                "🐺 Múltiples lobos con lógica mejorada",
+                "🎨 Rediseño completo con glass morphism",
+                "📊 Estadísticas con medallas y ranking",
+                "🎵 Música ambiental y efectos de sonido",
+                "🐑 Orden aleatorio de preguntas",
+                "🤝 Manejo de empates en votación"
+            ]
+        },
+        {
+            version: "1.5.0",
+            nombre: "Alpha",
+            fecha: "2026-02-01",
+            tipo: "minor",
+            cambios: [
+                "🎵 Música ambiental añadida",
+                "🔊 Efectos de sonido para acciones",
+                "🐑 Sistema de votación mejorado",
+                "📱 Diseño responsive para móviles"
+            ]
+        },
+        {
+            version: "1.0.0",
+            nombre: "Alpha",
+            fecha: "2026-01-15",
+            tipo: "major",
+            cambios: [
+                "🎮 Lanzamiento inicial del juego",
+                "🐺 Lobo vs Ovejas (1 lobo)",
+                "📋 Sistema básico de roles",
+                "🗳️ Votación simple",
+                "📊 Estadísticas básicas"
+            ]
+        }
+    ]
+};
+
+const VERSION_ACTUAL = VERSION_HISTORY.actual;
+
 // ---------- ANIMACIONES CSS ----------
 const animacionesCSS = `
     @keyframes fadeInScale {
@@ -279,6 +329,11 @@ const animacionesCSS = `
         to { transform: rotateY(360deg); }
     }
     
+    @keyframes slideDown {
+        from { transform: translateY(-100%); }
+        to { transform: translateY(0); }
+    }
+    
     .animate-fade-in { animation: fadeInScale 0.5s ease-out; }
     .animate-slide-up { animation: slideInFromBottom 0.5s ease-out; }
     .animate-pulse { animation: pulse 1s infinite; }
@@ -317,19 +372,17 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = animacionesCSS;
 document.head.appendChild(styleSheet);
 
-// ---------- Estado Global ----------
-
 // ---------- TUTORIAL ----------
 let tutorialActivo = false;
 let tutorialCompletado = localStorage.getItem('tutorial_completado') === 'true';
 let pasoActualTutorial = 0;
 
-// ---------- 🔥 VARIABLES PARA TUTORIAL INTERACTIVO ----------
+// ---------- VARIABLES PARA TUTORIAL INTERACTIVO ----------
 let tutorialEnCurso = false;
 let tutorialEsperandoInteraccion = false;
 let tutorialListenersActivos = [];
 
-// ---------- PASOS DEL TUTORIAL INTERACTIVO (CORREGIDO) ----------
+// ---------- PASOS DEL TUTORIAL INTERACTIVO ----------
 const pasosTutorial = [
     {
         id: 1,
@@ -543,7 +596,7 @@ const pasosTutorial = [
         accion: "final",
         feedback: "¡A disfrutar el juego!"
     }
-]; 
+];
 
 let players = JSON.parse(localStorage.getItem('undercover_players')) || [];
 
@@ -599,7 +652,7 @@ document.addEventListener('click', function initMusicOnFirstClick() {
     document.removeEventListener('click', initMusicOnFirstClick);
 }, { once: true });
 
-/// ---------- RENDER PRINCIPAL (ACTUALIZADO) ----------
+// ---------- RENDER PRINCIPAL ----------
 function renderScreen() {
     AmbientMusic.toggleForScreen(currentScreen);
     
@@ -623,7 +676,7 @@ function renderScreen() {
     else renderMenu();
 }
 
-//// ---------- MENÚ PRINCIPAL (CON ESTILO MEJORADO) ----------
+// ---------- MENÚ PRINCIPAL (CON VERSIONES) ----------
 function renderMenu() {
     currentScreen = 'menu';
     let html = `
@@ -644,6 +697,19 @@ function renderMenu() {
                 </button>
             </div>
             
+            <!-- Versión y changelog -->
+            <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+                <button class="btn-version" id="btnVersion" style="background: transparent; color: #667eea; border: 2px solid #667eea; border-radius: 25px; padding: 8px 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 5px;">
+                    <span style="font-size: 1.2rem;">🏷️</span>
+                    <span style="font-weight: bold;">v${VERSION_ACTUAL}</span>
+                    <span style="background: #ffd700; color: #1a1a2e; border-radius: 15px; padding: 2px 8px; font-size: 0.7rem; margin-left: 5px;">Beta</span>
+                </button>
+                
+                <button class="btn-version" id="btnChangelog" style="background: transparent; color: #4CAF50; border: 2px solid #4CAF50; border-radius: 25px; padding: 8px 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;">
+                    📋 Historial
+                </button>
+            </div>
+            
             <!-- Menú principal con tarjetas -->
             <div class="glass-card" style="display: flex; flex-direction: column; gap: 8px;">
                 <button class="btn-modern" id="btnAddPlayer">➕ Agregar Jugador</button>
@@ -657,8 +723,7 @@ function renderMenu() {
     `;
     app.innerHTML = html;
     
-    // ... event listeners (igual que antes) ...
-    
+    // Event listeners
     document.getElementById('musicOnBtn')?.addEventListener('click', () => {
         AmbientMusic.play();
         renderMenu();
@@ -669,8 +734,9 @@ function renderMenu() {
         renderMenu();
     });
     
-    // 🔥 NUEVO: Botón de Tutorial
     document.getElementById('btnTutorial')?.addEventListener('click', iniciarTutorial);
+    document.getElementById('btnVersion')?.addEventListener('click', mostrarVersionActual);
+    document.getElementById('btnChangelog')?.addEventListener('click', mostrarChangelog);
     
     document.getElementById('btnAddPlayer')?.addEventListener('click', () => renderAddPlayer());
     document.getElementById('btnGroupManager')?.addEventListener('click', () => renderGroupManager());
@@ -680,7 +746,71 @@ function renderMenu() {
     document.getElementById('btnStartGame')?.addEventListener('click', () => iniciarPartida());
 }
 
-/// ---------- AGREGAR JUGADOR (CON ESTILO MEJORADO) ----------
+// ---------- FUNCIONES DE VERSIÓN ----------
+function mostrarVersionActual() {
+    let versionActual = VERSION_HISTORY.historial.find(v => v.version === VERSION_ACTUAL);
+    
+    modalTitle.textContent = `📦 Versión ${versionActual.version} ${versionActual.nombre}`;
+    modalBody.innerHTML = `
+        <div style="text-align: center; padding: 15px;">
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                <p style="color: white; font-size: 1.2rem;">🏷️ v${versionActual.version}</p>
+                <p style="color: #ffd700;">${versionActual.fecha}</p>
+                <p style="color: white; margin-top: 5px; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 10px; display: inline-block;">
+                    ${versionActual.tipo === 'major' ? '🌟 Gran Actualización' : '✨ Mejoras'}
+                </p>
+            </div>
+            
+            <p style="color: white; margin-bottom: 10px;">📋 Novedades:</p>
+            <div style="color: #a0a0a0; text-align: left; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; max-height: 200px; overflow-y: auto;">
+                ${versionActual.cambios.map(c => `• ${c}`).join('<br>')}
+            </div>
+            
+            <p style="color: #a0a0a0; font-size: 0.8rem; margin-top: 15px;">
+                ¡Gracias por jugar!
+            </p>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function mostrarChangelog() {
+    let historialHTML = VERSION_HISTORY.historial.map(v => {
+        let color = v.tipo === 'major' ? '#ff6b6b' : (v.tipo === 'minor' ? '#ffd700' : '#4CAF50');
+        let badge = v.tipo === 'major' ? '🌟' : (v.tipo === 'minor' ? '✨' : '🔧');
+        let cambios = v.cambios.map(c => `<span style="display: block; margin: 5px 0;">&nbsp;&nbsp;• ${c}</span>`).join('');
+        
+        return `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; border-left: 4px solid ${color};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="color: ${color}; font-weight: bold; font-size: 1.1rem;">
+                        ${badge} v${v.version} ${v.nombre}
+                    </span>
+                    <span style="color: #a0a0a0; font-size: 0.8rem;">${v.fecha}</span>
+                </div>
+                <div style="color: white; font-size: 0.9rem; line-height: 1.5;">${cambios}</div>
+            </div>
+        `;
+    }).join('');
+
+    modalTitle.textContent = "📋 Historial de Versiones";
+    modalBody.innerHTML = `
+        <div style="max-height: 400px; overflow-y: auto; padding: 5px;">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span style="background: #667eea; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                    Versión actual: v${VERSION_ACTUAL}
+                </span>
+            </div>
+            ${historialHTML}
+            <p style="color: #a0a0a0; text-align: center; font-size: 0.8rem; margin-top: 15px;">
+                Seguimos mejorando el juego día a día ✨
+            </p>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+// ---------- AGREGAR JUGADOR ----------
 function renderAddPlayer() {
     let html = `
         <div class="screen" style="padding: 15px;">
@@ -728,7 +858,7 @@ function renderAddPlayer() {
     document.getElementById('backToMenu')?.addEventListener('click', renderMenu);
 }
 
-// ---------- GESTIÓN DE GRUPO (CON ESTILO MEJORADO) ----------
+// ---------- GESTIÓN DE GRUPO ----------
 function renderGroupManager() {
     let playersList = players.map((p, index) => `
         <div class="vote-card-modern" style="animation-delay: ${index * 0.1}s; margin: 5px 0;">
@@ -790,7 +920,7 @@ function renderGroupManager() {
     });
 }
 
-// ---------- DICCIONARIO (CON ESTILO MEJORADO) ----------
+// ---------- DICCIONARIO ----------
 function renderDictionary() {
     let categoriasHtml = Object.keys(categorias).map(cat => `
         <div class="glass-card" style="margin-bottom: 20px; padding: 15px;">
@@ -824,7 +954,7 @@ function renderDictionary() {
     document.getElementById('btnVolverDic')?.addEventListener('click', renderMenu);
 }
 
-// ---------- CONFIGURACIÓN DE PARTIDA (CON ESTILO MEJORADO) ----------
+// ---------- CONFIGURACIÓN DE PARTIDA ----------
 function renderGameSetup() {
     let totalJugadores = players.length;
     
@@ -910,29 +1040,23 @@ function renderGameSetup() {
     
     app.innerHTML = html;
     
-    // ... event listeners (igual que antes) ...
-    
     let impRange = document.getElementById('impRange');
     let impCountDisplay = document.getElementById('impCountDisplay');
     let ciudCountDisplay = document.getElementById('ciudCountDisplay');
     let guardarBtn = document.getElementById('guardarConfigBtn');
     let configSavedMessage = document.getElementById('configSavedMessage');
     
-    // Actualizar contadores al mover el slider
     impRange.addEventListener('input', () => {
         let imp = parseInt(impRange.value);
         impCountDisplay.textContent = imp;
         ciudCountDisplay.textContent = totalJugadores - imp;
     });
     
-    // BOTÓN GUARDAR - Captura TODOS los valores y los guarda
     guardarBtn.addEventListener('click', () => {
-        // Obtener valores actuales
         let numImpostores = parseInt(impRange.value);
         let impostorVeCategoria = document.getElementById('impostorVeCategoria').checked;
         let categoria = document.getElementById('categoriaSelect').value;
         
-        // Crear objeto de configuración
         let config = {
             numImpostores: numImpostores,
             impostorVeCategoria: impostorVeCategoria,
@@ -940,16 +1064,13 @@ function renderGameSetup() {
             fechaGuardado: new Date().toLocaleString()
         };
         
-        // Guardar en localStorage
         localStorage.setItem('undercover_config', JSON.stringify(config));
         
-        // Mostrar mensaje de confirmación
         configSavedMessage.style.display = 'block';
         setTimeout(() => {
             configSavedMessage.style.display = 'none';
         }, 2000);
         
-        // Feedback táctil/vibración (si está disponible)
         if (navigator.vibrate) {
             navigator.vibrate(50);
         }
@@ -960,7 +1081,7 @@ function renderGameSetup() {
     document.getElementById('backToMenu').addEventListener('click', renderMenu);
 }
 
-// ---------- ESTADÍSTICAS (CON ESTILO MEJORADO) ----------
+// ---------- ESTADÍSTICAS ----------
 function renderStats() {
     let statsPlayers = [...players].sort((a,b) => b.totalPuntos - a.totalPuntos);
     let rows = statsPlayers.map((p, idx) => {
@@ -1012,41 +1133,28 @@ function renderStats() {
     document.getElementById('backToMenu')?.addEventListener('click', renderMenu);
 }
 
-// ---------- INICIAR PARTIDA (USANDO CONFIGURACIÓN GUARDADA) ----------
+// ---------- INICIAR PARTIDA ----------
 function iniciarPartida() {
     if(players.length < 3) {
         alert('Necesitas al menos 3 jugadores');
         return;
     }
     
-    // CARGAR CONFIGURACIÓN GUARDADA
     let config = JSON.parse(localStorage.getItem('undercover_config')) || {
         numImpostores: 1,
         impostorVeCategoria: false,
         categoria: 'aleatoria'
     };
     
-    console.log('📋 Configuración cargada:', config);
-    
-    // ASIGNAR VALORES DE CONFIGURACIÓN
     let numImpostores = config.numImpostores;
     let impostorVeCategoria = config.impostorVeCategoria;
     let categoriaElegida = config.categoria;
     
-    console.log('🎮 Valores asignados:', {
-        numImpostores,
-        impostorVeCategoria,
-        categoriaElegida
-    });
-    
-    // Validar que el número de impostores sea válido
     let maxImpostores = Math.floor(players.length / 2);
     if (numImpostores > maxImpostores) {
         numImpostores = maxImpostores;
-        console.log('⚠️ Ajustando Lobos a:', numImpostores);
     }
     
-    // Seleccionar categoría y palabra
     let categoriaSeleccionada = '';
     let palabraSeleccionada = '';
     
@@ -1055,15 +1163,11 @@ function iniciarPartida() {
         categoriaSeleccionada = categoriasList[Math.floor(Math.random() * categoriasList.length)];
         let palabrasCategoria = categorias[categoriaSeleccionada];
         palabraSeleccionada = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
-        console.log('🎲 Categoría aleatoria seleccionada:', categoriaSeleccionada);
     } else {
         categoriaSeleccionada = categoriaElegida;
         let palabrasCategoria = categorias[categoriaElegida];
         palabraSeleccionada = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
-        console.log('📁 Categoría fija seleccionada:', categoriaSeleccionada);
     }
-    
-    console.log('🔤 Palabra secreta:', palabraSeleccionada);
     
     gameState = {
         status: 'asignando',
@@ -1085,22 +1189,13 @@ function iniciarPartida() {
         if(!gameState.impostorIndexes.includes(r)) gameState.impostorIndexes.push(r);
     }
     
-    // 🔄 Generar orden aleatorio inicial
     gameState.ordenPreguntas = generarOrdenPreguntas();
-    console.log('🔄 Orden de preguntas inicial:', gameState.ordenPreguntas.map(idx => gameState.playersInGame[idx].nombre));
-    
-    console.log('🎭 GameState creado:', {
-        impostorIndexes: gameState.impostorIndexes,
-        impostorVeCategoria: gameState.impostorVeCategoria,
-        categoriaSecreta: gameState.categoriaSecreta,
-        ordenPreguntas: gameState.ordenPreguntas
-    });
 
     currentScreen = 'asignarRoles';
     renderScreen();
 }
 
-// ---------- ASIGNAR ROLES (CON ESTILO MEJORADO) ----------
+// ---------- ASIGNAR ROLES ----------
 function renderAsignarRoles() {
     if(gameState.currentRolIndex >= gameState.playersInGame.length) {
         currentScreen = 'juego';
@@ -1110,12 +1205,6 @@ function renderAsignarRoles() {
 
     let jugador = gameState.playersInGame[gameState.currentRolIndex];
     let esImpostor = gameState.impostorIndexes.includes(gameState.currentRolIndex);
-    
-    console.log(`🎭 Mostrando rol a ${jugador.nombre}:`, {
-        esImpostor,
-        impostorVeCategoria: gameState.impostorVeCategoria,
-        categoria: gameState.categoriaSecreta
-    });
     
     let contenidoRol = '';
     if (esImpostor) {
@@ -1153,18 +1242,15 @@ function renderAsignarRoles() {
         `;
     }
     
-    // Barra de progreso de asignación
     let progreso = ((gameState.currentRolIndex + 1) / gameState.playersInGame.length) * 100;
     
     let html = `
         <div class="screen" style="justify-content: center; padding: 15px;">
-            <!-- Barra de progreso -->
             <div style="background: rgba(255,255,255,0.1); border-radius: 30px; height: 8px; margin: 10px 0 20px 0;">
                 <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: ${progreso}%; height: 8px; border-radius: 30px; transition: width 0.3s ease;"></div>
             </div>
             <p style="color: #a0a0a0; text-align: center; margin-bottom: 10px;">Jugador ${gameState.currentRolIndex + 1} de ${gameState.playersInGame.length}</p>
             
-            <!-- Tarjeta de rol -->
             <div class="rol-card" id="rolCard" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a); border: 3px solid #667eea; border-radius: 40px; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
                 <h2 id="playerNameDisplay" class="animate-float" style="font-size: 2.8rem; color: white; margin-bottom: 20px; text-shadow: 0 0 15px #667eea;">${jugador.nombre}</h2>
                 <div id="rolContent" style="display: none;">
@@ -1172,7 +1258,6 @@ function renderAsignarRoles() {
                 </div>
             </div>
             
-            <!-- Botones con estilo -->
             <button class="btn-modern" id="revelarRol" style="margin-top: 20px; padding: 15px; font-size: 1.2rem;">
                 ✨ Mostrar Rol
             </button>
@@ -1204,7 +1289,7 @@ function renderAsignarRoles() {
     });
 }
 
-// ---------- PANTALLA DE JUEGO (CON ESTILO MEJORADO) ----------
+// ---------- PANTALLA DE JUEGO ----------
 function renderJuego() {
     if(gameState.eliminatedPlayers.length === gameState.playersInGame.length - 1) {
         terminarJuego('impostor');
@@ -1213,10 +1298,8 @@ function renderJuego() {
 
     currentScreen = 'juego';
     
-    // Determinar si mostrar la categoría o no
     let mostrarCategoria = gameState.impostorVeCategoria;
     
-    // Obtener nombres en orden de preguntas
     let ordenNombres = gameState.ordenPreguntas
         .map(idx => gameState.playersInGame[idx].nombre)
         .join(' → ');
@@ -1232,7 +1315,6 @@ function renderJuego() {
                 `<div class="category-tag" style="border-color: #666; color: #666;">🔒 Categoría oculta</div>`
             }
             
-            <!-- Orden de preguntas con estilo -->
             <div class="order-container">
                 <div class="order-title">🔄 Orden de preguntas</div>
                 <div class="order-names">${ordenNombres}</div>
@@ -1241,7 +1323,6 @@ function renderJuego() {
             
             <div class="time-message">⏳ ¡TIEMPO PARA PREGUNTAR!</div>
             
-            <!-- Botones -->
             <button class="btn-modern" id="abrirVotacionBtn" style="margin: 5px 0;">
                 🗳️ Iniciar Votación
             </button>
@@ -1257,51 +1338,39 @@ function renderJuego() {
     `;
     app.innerHTML = html;
     
-    // ... event listeners (igual que antes) ...  
     document.getElementById('abrirVotacionBtn').addEventListener('click', () => {
         currentScreen = 'votacion';
         renderScreen();
     });
     
-    // 🔥 NUEVO: Event listener para cambiar palabra
     document.getElementById('cambiarPalabraJuegoBtn').addEventListener('click', cambiarPalabraDuranteJuego);
     
     document.getElementById('salirAlMenu').addEventListener('click', renderMenu);
 }
 
-// ---------- 🔥 FUNCIÓN PARA CAMBIAR PALABRA DURANTE EL JUEGO ----------
+// ---------- FUNCIÓN PARA CAMBIAR PALABRA ----------
 function cambiarPalabraDuranteJuego() {
-    // Confirmar con el usuario
-    if (!confirm('⚠️ ¿Seguro que quieres cambiar la palabra?\n\nEsto reiniciará la ronda actual y todos los jugadores (excepto los lobos) verán la nueva palabra.')) {
+    if (!confirm('⚠️ ¿Seguro que quieres cambiar la palabra?\n\nSe reiniciará la asignación de roles para que todos vean la nueva información.')) {
         return;
     }
     
-    // Generar nueva palabra de la MISMA categoría
     let palabrasCategoria = categorias[gameState.categoriaSecreta];
     let nuevaPalabra;
     
-    // Asegurar que no sea la misma palabra
     do {
         nuevaPalabra = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
     } while (nuevaPalabra === gameState.palabraSecreta && palabrasCategoria.length > 1);
     
-    // Guardar palabra anterior para feedback
-    let palabraAnterior = gameState.palabraSecreta;
-    
-    // Actualizar palabra secreta
     gameState.palabraSecreta = nuevaPalabra;
+    gameState.currentRolIndex = 0;
+    currentScreen = 'asignarRoles';
     
-    // Mostrar feedback
-    mostrarToast(`🔄 Palabra cambiada: "${palabraAnterior}" → "${nuevaPalabra}"`);
-    
-    // Opcional: Reproducir sonido de cambio
+    mostrarToast('🔄 Palabra cambiada correctamente');
     SoundEffects.playRevealSound();
-    
-    // Volver a renderizar la pantalla de juego
-    renderJuego();
+    renderScreen();
 }
 
-// ---------- VOTACIÓN (COMPLETA Y CORREGIDA) ----------
+// ---------- VOTACIÓN ----------
 function renderVotacion() {
     let activePlayers = gameState.playersInGame.filter((_, idx) => !gameState.eliminatedPlayers.includes(idx));
     let votos = [];
@@ -1312,7 +1381,6 @@ function renderVotacion() {
             <h2 class="neon-title" style="font-size: 1.8rem;">🗳️ VOTACIÓN</h2>
             <div class="round-indicator" style="margin-bottom: 10px;">Ronda ${gameState.round}</div>
             
-            <!-- Indicador de votante actual -->
             <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2); margin: 10px 0;">
                 <div style="color: white; font-size: 1rem; margin-bottom: 5px;">🎯 Le toca votar a:</div>
                 <div class="order-names" style="font-size: 1.8rem; background: rgba(0,0,0,0.2);" id="nombreVotante">${activePlayers[0]?.nombre || ''}</div>
@@ -1321,7 +1389,6 @@ function renderVotacion() {
             
             <p style="color: #a0a0a0; text-align: center; margin: 10px 0;">👆 Toca el nombre de tu sospechoso</p>
             
-            <!-- Lista de jugadores -->
             <div class="players-list" id="votacionList" style="max-height: 350px; overflow-y: auto; margin-bottom: 10px;">
                 ${activePlayers.map((p, idx) => {
                     let originalIndex = gameState.playersInGame.findIndex(sp => sp.id === p.id);
@@ -1338,7 +1405,6 @@ function renderVotacion() {
                 }).join('')}
             </div>
             
-            <!-- Botones de acción -->
             <div style="display: flex; gap: 10px; margin: 15px 0;">
                 <button class="btn-modern" id="reiniciarVotosBtn" style="flex: 1; background: #2a2a3a; padding: 12px;">🔄 Reiniciar</button>
                 <button class="btn-modern" id="finalizarVotacionBtn" style="flex: 1; padding: 12px;">🔍 Resultado</button>
@@ -1355,7 +1421,6 @@ function renderVotacion() {
     let reiniciarBtn = document.getElementById('reiniciarVotosBtn');
     let finalizarBtn = document.getElementById('finalizarVotacionBtn');
     
-    // Función para actualizar badges de votos
     function actualizarBadges() {
         document.querySelectorAll('.vote-badge-modern').forEach(badge => {
             badge.style.display = 'none';
@@ -1380,7 +1445,6 @@ function renderVotacion() {
         });
     }
     
-    // Función para actualizar el votante actual
     function actualizarVotanteActual() {
         if (votanteActual < activePlayers.length) {
             nombreVotante.textContent = activePlayers[votanteActual].nombre;
@@ -1395,7 +1459,6 @@ function renderVotacion() {
         }
     }
     
-    // Event listener para las tarjetas (votar)
     document.querySelectorAll('.vote-card-modern').forEach(card => {
         card.addEventListener('click', function() {
             if (votanteActual >= activePlayers.length) {
@@ -1436,7 +1499,6 @@ function renderVotacion() {
         });
     });
     
-    // Botón reiniciar
     reiniciarBtn.addEventListener('click', () => {
         votos = [];
         votanteActual = 0;
@@ -1453,7 +1515,6 @@ function renderVotacion() {
         mostrarToast('🔄 Votación reiniciada');
     });
     
-    // Botón finalizar
     finalizarBtn.addEventListener('click', () => {
         if (votos.length === 0) {
             mostrarToast('❌ Debe haber al menos un voto');
@@ -1465,13 +1526,11 @@ function renderVotacion() {
             conteo[v.votadoIndex] = (conteo[v.votadoIndex] || 0) + 1;
         });
         
-        // Encontrar el máximo de votos
         let maxVotos = 0;
         Object.values(conteo).forEach(votos => {
             if (votos > maxVotos) maxVotos = votos;
         });
         
-        // Encontrar todos los que tienen el máximo de votos (posible empate)
         let masVotados = [];
         Object.keys(conteo).forEach(idx => {
             if (conteo[idx] === maxVotos) {
@@ -1479,7 +1538,6 @@ function renderVotacion() {
             }
         });
         
-        // CASO 1: HAY EMPATE
         if (masVotados.length > 1) {
             SoundEffects.playErrorSound();
             
@@ -1489,15 +1547,10 @@ function renderVotacion() {
             
             modalBody.innerHTML = `
                 <div style="text-align: center; padding: 20px;" class="animate-fade-in">
-                    <div style="font-size: 3rem; margin-bottom: 15px; animation: float 2s infinite;">🤝</div>
-                    <h3 style="color: #ffd700; font-size: 2rem; margin: 10px 0;">¡EMPATE!</h3>
-                    <p style="color: white; margin: 20px 0; font-size: 1.2rem;">
-                        ${nombresEmpate} empataron con ${maxVotos} votos cada uno.
-                    </p>
-                    <div style="background: #1e1e2e; border-radius: 15px; padding: 15px; margin-top: 15px;">
-                        <p style="color: #a0a0a0; margin: 0;">🔍 Nadie es eliminado esta ronda</p>
-                        <p style="color: #a0a0a0; margin-top: 5px;">Habrá otra ronda de preguntas</p>
-                    </div>
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🤝</div>
+                    <h3 style="color: #ffd700; font-size: 2rem;">¡EMPATE!</h3>
+                    <p style="color: white; margin: 20px 0;">${nombresEmpate} empataron con ${maxVotos} votos.</p>
+                    <p style="color: #a0a0a0;">Nadie es eliminado. Siguiente ronda.</p>
                 </div>
             `;
             
@@ -1514,7 +1567,6 @@ function renderVotacion() {
             return;
         }
         
-        // CASO 2: HAY UN GANADOR (SIN EMPATE)
         let eliminadoIdx = masVotados[0];
         let jugadorEliminado = gameState.playersInGame[eliminadoIdx];
         let esImpostor = gameState.impostorIndexes.includes(eliminadoIdx);
@@ -1528,21 +1580,15 @@ function renderVotacion() {
         modalTitle.textContent = esImpostor ? '🎉 ¡LOBO DESCUBIERTO!' : '😢 ¡Votación Errónea!';
         
         let mensaje = esImpostor 
-            ? `✅ ¡Correcto! ${jugadorEliminado.nombre} era un LOBO.`
-            : `❌ Oh no... ${jugadorEliminado.nombre} NO era el LOBO. Era una OVEJA.`;
-        
-        let lobosRestantes = gameState.impostorIndexes.filter(idx => !gameState.eliminatedPlayers.includes(idx) && idx !== eliminadoIdx).length;
+            ? `✅ ${jugadorEliminado.nombre} era un LOBO.`
+            : `❌ ${jugadorEliminado.nombre} NO era el LOBO.`;
         
         modalBody.innerHTML = `
-            <div style="text-align: center; padding: 20px;" class="animate-fade-in">
-                <div style="font-size: 3rem; margin-bottom: 15px; animation: float 2s infinite;">${esImpostor ? '🐺' : '💔'}</div>
-                <h3 style="color: ${esImpostor ? '#00ff00' : '#ff6b6b'}; font-size: 2rem; margin: 10px 0;">${jugadorEliminado.nombre}</h3>
-                <p style="color: white; margin: 20px 0; font-size: 1.2rem;">${mensaje}</p>
-                <div style="background: #1e1e2e; border-radius: 15px; padding: 15px; margin-top: 15px;">
-                    <p style="color: #ffd700; margin: 0;">🗳️ Recibió ${maxVotos} ${maxVotos === 1 ? 'voto' : 'votos'}</p>
-                    <p style="color: #a0a0a0; margin-top: 5px;">Total de votos: ${votos.length}</p>
-                    ${esImpostor ? `<p style="color: #ff6b6b; margin-top: 10px;">🐺 Quedan ${lobosRestantes} ${lobosRestantes === 1 ? 'lobo' : 'lobos'}</p>` : ''}
-                </div>
+            <div style="text-align: center; padding: 20px;">
+                <div style="font-size: 3rem;">${esImpostor ? '🐺' : '💔'}</div>
+                <h3 style="color: ${esImpostor ? '#00ff00' : '#ff6b6b'};">${jugadorEliminado.nombre}</h3>
+                <p>${mensaje}</p>
+                <p>🗳️ Recibió ${maxVotos} votos</p>
             </div>
         `;
         
@@ -1582,7 +1628,7 @@ function renderVotacion() {
     actualizarVotanteActual();
 }
 
-// ---------- 🔄 FUNCIÓN PARA MEZCLAR ARRAY ALEATORIAMENTE ----------
+// ---------- FUNCIONES AUXILIARES ----------
 function mezclarArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1591,21 +1637,17 @@ function mezclarArray(array) {
     return array;
 }
 
-// ---------- 🔄 FUNCIÓN PARA GENERAR ORDEN ALEATORIO DE PREGUNTAS ----------
 function generarOrdenPreguntas() {
-    // Obtener índices de jugadores activos (no eliminados)
     let activos = [];
     gameState.playersInGame.forEach((_, idx) => {
         if (!gameState.eliminatedPlayers.includes(idx)) {
             activos.push(idx);
         }
     });
-    
-    // Mezclar aleatoriamente
     return mezclarArray(activos);
 }
 
-// ---------- INICIAR TUTORIAL ----------
+// ---------- FUNCIONES DEL TUTORIAL ----------
 function iniciarTutorial() {
     console.log('🎮 Iniciando tutorial interactivo');
     tutorialActivo = true;
@@ -1613,14 +1655,10 @@ function iniciarTutorial() {
     tutorialPasoActual = 0;
     tutorialEnCurso = true;
     
-    // Limpiar cualquier listener previo
     eliminarListenersTutorial();
-    
-    // Mostrar primer paso
     mostrarPasoTutorial();
 }
 
-// ---------- ELIMINAR LISTENERS ----------
 function eliminarListenersTutorial() {
     tutorialListenersActivos.forEach(({elemento, tipo, listener}) => {
         if (elemento) {
@@ -1630,11 +1668,9 @@ function eliminarListenersTutorial() {
     tutorialListenersActivos = [];
 }
 
-// ---------- MOSTRAR PASO DEL TUTORIAL ----------
 function mostrarPasoTutorial() {
     let paso = pasosTutorial[tutorialPasoActual];
     if (!paso) {
-        // Tutorial completado
         tutorialActivo = false;
         tutorialCompletado = true;
         localStorage.setItem('tutorial_completado', 'true');
@@ -1644,21 +1680,17 @@ function mostrarPasoTutorial() {
     
     console.log(`📋 Paso ${tutorialPasoActual + 1}: ${paso.titulo}`);
     
-    // Navegar a la pantalla necesaria
     navegarAPantallaTutorial(paso.pantalla, paso);
     
-    // Mostrar overlay con instrucciones
     setTimeout(() => {
         mostrarOverlayTutorial(paso);
         
-        // Si el paso requiere interacción, configurar listeners
         if (paso.accion !== 'esperar' && paso.accion !== 'final') {
             configurarListenerPaso(paso);
         }
     }, 300);
 }
 
-// ---------- NAVEGAR A PANTALLA ----------
 function navegarAPantallaTutorial(pantalla, paso) {
     if (pantalla === 'menu') renderMenuTutorial();
     else if (pantalla === 'addPlayer') renderAddPlayerTutorial();
@@ -1668,563 +1700,9 @@ function navegarAPantallaTutorial(pantalla, paso) {
     else if (pantalla === 'asignarRolesTutorial') renderAsignarRolesTutorial();
     else if (pantalla === 'juegoTutorial') renderJuegoTutorial();
     else if (pantalla === 'votacionTutorial') renderVotacionTutorial();
-    else if (pantalla === 'modal') {
-        // Mantener la pantalla actual
-    }
 }
 
-/// ---------- CONFIGURAR LISTENER SEGÚN ACCIÓN ----------
-function configurarListenerPaso(paso) {
-    eliminarListenersTutorial();
-    
-    setTimeout(() => {
-        switch (paso.accion) {
-            case 'clic':
-                configurarListenerClic(paso);
-                break;
-            case 'clicTutorialIniciar':
-                configurarListenerClicTutorialIniciar(paso);
-                break;
-            case 'escribirYGuardar':
-                configurarListenerEscribirYGuardar(paso);
-                break;
-            case 'moverSlider':
-                configurarListenerSlider(paso);
-                break;
-            case 'marcarCheckbox':
-                configurarListenerCheckbox(paso);
-                break;
-            case 'seleccionarOpcion':
-                configurarListenerSelect(paso);
-                break;
-            case 'clicEnJugador':
-                configurarListenerClicEnJugador(paso);
-                break;
-            case 'temporizador':
-                console.log(`⏳ Paso ${paso.id} con temporizador`);
-                break;
-        }
-    }, 200);
-}
-
-// ---------- LISTENER PARA CLIC EN ELEMENTO ----------
-function configurarListenerClic(paso) {
-    let elemento = document.getElementById(paso.elemento);
-    if (!elemento) {
-        console.warn(`⚠️ Elemento no encontrado: ${paso.elemento}`);
-        return;
-    }
-    
-    // Destacar elemento
-    elemento.style.animation = 'pulse 1s infinite';
-    elemento.style.border = '4px solid #ffd700';
-    elemento.style.boxShadow = '0 0 20px #ffd700';
-    elemento.style.transform = 'scale(1.05)';
-    elemento.style.transition = 'all 0.3s ease';
-    
-    let listener = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Quitar efectos
-        elemento.style.animation = '';
-        elemento.style.border = '';
-        elemento.style.boxShadow = '';
-        elemento.style.transform = '';
-        
-        // Eliminar listener
-        elemento.removeEventListener('click', listener);
-        
-        // Eliminar overlay
-        let overlay = document.getElementById('tutorialOverlay');
-        if (overlay) overlay.remove();
-        
-        // Mostrar feedback
-        mostrarToast(paso.feedback || '✅ Correcto!');
-        
-        // Avanzar al siguiente paso
-        setTimeout(() => {
-            tutorialPasoActual++;
-            mostrarPasoTutorial();
-        }, 500);
-    };
-    
-    elemento.addEventListener('click', listener);
-    tutorialListenersActivos.push({elemento, tipo: 'click', listener});
-}
-
-// ---------- LISTENER ESPECIAL PARA INICIAR PARTIDA EN TUTORIAL ----------
-function configurarListenerClicTutorialIniciar(paso) {
-    let elemento = document.getElementById(paso.elemento);
-    if (!elemento) return;
-    
-    elemento.style.animation = 'pulse 1s infinite';
-    elemento.style.border = '4px solid #ffd700';
-    
-    let listener = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        elemento.style.animation = '';
-        elemento.style.border = '';
-        elemento.removeEventListener('click', listener);
-        
-        let overlay = document.getElementById('tutorialOverlay');
-        if (overlay) overlay.remove();
-        
-        mostrarToast(paso.feedback);
-        
-        setTimeout(() => {
-            tutorialPasoActual++;
-            renderAsignarRolesTutorial();
-            
-            setTimeout(() => {
-                let siguientePaso = pasosTutorial[tutorialPasoActual];
-                if (siguientePaso) {
-                    mostrarOverlayTutorial(siguientePaso);
-                    if (siguientePaso.accion !== 'esperar' && siguientePaso.accion !== 'final') {
-                        configurarListenerPaso(siguientePaso);
-                    }
-                }
-            }, 300);
-        }, 500);
-    };
-    
-    elemento.addEventListener('click', listener);
-    tutorialListenersActivos.push({elemento, tipo: 'click', listener});
-}
-
-// ---------- LISTENER PARA ESCRIBIR Y GUARDAR ----------
-function configurarListenerEscribirYGuardar(paso) {
-    let input = document.getElementById(paso.elementoInput);
-    let boton = document.getElementById(paso.elementoBoton);
-    
-    if (!input || !boton) return;
-    
-    // Destacar elementos
-    input.style.animation = 'pulse 1s infinite';
-    input.style.border = '4px solid #ffd700';
-    boton.style.animation = 'pulse 1s infinite';
-    boton.style.border = '4px solid #ffd700';
-    
-    // Listener para el input
-    let inputListener = () => {
-        if (input.value.trim() !== '') {
-            // Cuando el input tiene texto, destacar botón
-            boton.style.animation = 'pulse 1s infinite';
-            boton.style.border = '4px solid #ffd700';
-        }
-    };
-    
-    // Listener para el botón
-    let botonListener = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (input.value.trim() !== '') {
-            // Quitar efectos
-            input.style.animation = '';
-            input.style.border = '';
-            boton.style.animation = '';
-            boton.style.border = '';
-            
-            // Eliminar listeners
-            input.removeEventListener('input', inputListener);
-            boton.removeEventListener('click', botonListener);
-            
-            // Eliminar overlay
-            let overlay = document.getElementById('tutorialOverlay');
-            if (overlay) overlay.remove();
-            
-            mostrarToast(paso.feedback || '✅ Guardado!');
-            
-            setTimeout(() => {
-                tutorialPasoActual++;
-                mostrarPasoTutorial();
-            }, 500);
-        }
-    };
-    
-    input.addEventListener('input', inputListener);
-    boton.addEventListener('click', botonListener);
-    
-    tutorialListenersActivos.push({elemento: input, tipo: 'input', listener: inputListener});
-    tutorialListenersActivos.push({elemento: boton, tipo: 'click', listener: botonListener});
-}
-
-// ---------- LISTENER PARA MOVER SLIDER ----------
-function configurarListenerSlider(paso) {
-    let slider = document.getElementById(paso.elemento);
-    if (!slider) return;
-    
-    slider.style.animation = 'pulse 1s infinite';
-    slider.style.border = '4px solid #ffd700';
-    
-    let listener = () => {
-        if (parseInt(slider.value) === paso.valorObjetivo) {
-            slider.style.animation = '';
-            slider.style.border = '';
-            
-            slider.removeEventListener('input', listener);
-            
-            // Eliminar overlay
-            let overlay = document.getElementById('tutorialOverlay');
-            if (overlay) overlay.remove();
-            
-            mostrarToast(paso.feedback || '✅ Correcto!');
-            
-            setTimeout(() => {
-                tutorialPasoActual++;
-                mostrarPasoTutorial();
-            }, 500);
-        }
-    };
-    
-    slider.addEventListener('input', listener);
-    tutorialListenersActivos.push({elemento: slider, tipo: 'input', listener});
-}
-
-// ---------- LISTENER PARA MARCAR CHECKBOX ----------
-function configurarListenerCheckbox(paso) {
-    let checkbox = document.getElementById(paso.elemento);
-    if (!checkbox) return;
-    
-    checkbox.style.animation = 'pulse 1s infinite';
-    checkbox.style.outline = '4px solid #ffd700';
-    
-    let listener = () => {
-        if (checkbox.checked) {
-            checkbox.style.animation = '';
-            checkbox.style.outline = '';
-            
-            checkbox.removeEventListener('change', listener);
-            
-            // Eliminar overlay
-            let overlay = document.getElementById('tutorialOverlay');
-            if (overlay) overlay.remove();
-            
-            mostrarToast(paso.feedback || '✅ Activado!');
-            
-            setTimeout(() => {
-                tutorialPasoActual++;
-                mostrarPasoTutorial();
-            }, 500);
-        }
-    };
-    
-    checkbox.addEventListener('change', listener);
-    tutorialListenersActivos.push({elemento: checkbox, tipo: 'change', listener});
-}
-
-// ---------- LISTENER PARA SELECT ----------
-function configurarListenerSelect(paso) {
-    let select = document.getElementById(paso.elemento);
-    if (!select) return;
-    
-    select.style.animation = 'pulse 1s infinite';
-    select.style.border = '4px solid #ffd700';
-    
-    let listener = () => {
-        if (select.value === paso.valorObjetivo) {
-            select.style.animation = '';
-            select.style.border = '';
-            
-            select.removeEventListener('change', listener);
-            
-            // Eliminar overlay
-            let overlay = document.getElementById('tutorialOverlay');
-            if (overlay) overlay.remove();
-            
-            mostrarToast(paso.feedback || '✅ Seleccionado!');
-            
-            setTimeout(() => {
-                tutorialPasoActual++;
-                mostrarPasoTutorial();
-            }, 500);
-        }
-    };
-    
-    select.addEventListener('change', listener);
-    tutorialListenersActivos.push({elemento: select, tipo: 'change', listener});
-}
-
-// ---------- LISTENER PARA CLIC EN JUGADOR ----------
-function configurarListenerClicEnJugador(paso) {
-    let jugadores = document.querySelectorAll(`.${paso.elemento}`);
-    if (jugadores.length === 0) return;
-    
-    let jugadorObjetivo = jugadores[paso.indiceJugador];
-    if (!jugadorObjetivo) return;
-    
-    jugadorObjetivo.style.animation = 'pulse 1s infinite';
-    jugadorObjetivo.style.border = '4px solid #ffd700';
-    jugadorObjetivo.style.transform = 'scale(1.05)';
-    
-    let listener = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        jugadorObjetivo.style.animation = '';
-        jugadorObjetivo.style.border = '';
-        jugadorObjetivo.style.transform = '';
-        
-        jugadorObjetivo.removeEventListener('click', listener);
-        
-        // Eliminar overlay
-        let overlay = document.getElementById('tutorialOverlay');
-        if (overlay) overlay.remove();
-        
-        mostrarToast(paso.feedback || '✅ Voto emitido!');
-        
-        setTimeout(() => {
-            tutorialPasoActual++;
-            mostrarPasoTutorial();
-        }, 500);
-    };
-    
-    jugadorObjetivo.addEventListener('click', listener);
-    tutorialListenersActivos.push({elemento: jugadorObjetivo, tipo: 'click', listener});
-}
-
-/// ---------- MOSTRAR OVERLAY INTERACTIVO ----------
-function mostrarOverlayTutorial(paso) {
-    // Eliminar overlay existente
-    let overlayExistente = document.getElementById('tutorialOverlay');
-    if (overlayExistente) overlayExistente.remove();
-    
-    // Si el paso es "esperar" o "final", mostramos overlay con botón
-    if (paso.accion === 'esperar' || paso.accion === 'final') {
-        mostrarOverlayConBoton(paso);
-    } else {
-        // Para acciones interactivas, mostramos overlay pequeño arriba
-        mostrarOverlayInformativo(paso);
-    }
-}
-
-// ---------- MOSTRAR OVERLAY CON BOTÓN (para pasos de bienvenida y final) ----------
-function mostrarOverlayConBoton(paso) {
-    let overlay = document.createElement('div');
-    overlay.id = 'tutorialOverlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.8);
-        z-index: 3000;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        pointer-events: auto;
-        animation: fadeInScale 0.3s ease;
-    `;
-    
-    let tarjeta = document.createElement('div');
-    tarjeta.style.cssText = `
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 30px;
-        padding: 25px;
-        max-width: 350px;
-        width: 100%;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        border: 3px solid white;
-        text-align: center;
-    `;
-    
-    let progreso = ((tutorialPasoActual + 1) / pasosTutorial.length) * 100;
-    
-    tarjeta.innerHTML = `
-        <div style="font-size: 4rem; margin-bottom: 15px;">${paso.imagen}</div>
-        <h2 style="color: white; font-size: 1.8rem; margin-bottom: 10px;">${paso.titulo}</h2>
-        <p style="color: #e0e0e0; font-size: 1rem; margin-bottom: 20px;">${paso.descripcion}</p>
-        
-        <div style="background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; margin: 15px 0;">
-            <div style="background: #ffd700; width: ${progreso}%; height: 10px; border-radius: 10px;"></div>
-        </div>
-        <p style="color: white; margin-bottom: 20px;">Paso ${tutorialPasoActual + 1} de ${pasosTutorial.length}</p>
-        
-        <button id="tutorialContinueBtn" style="background: #4CAF50; color: white; border: none; border-radius: 30px; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%;">
-            👉 Continuar
-        </button>
-        
-        <button id="tutorialSkipBtn" style="background: transparent; color: #ccc; border: 1px solid #ccc; border-radius: 30px; padding: 10px; font-size: 0.9rem; cursor: pointer; width: 100%; margin-top: 10px;">
-            ⏭️ Omitir tutorial
-        </button>
-    `;
-    
-    overlay.appendChild(tarjeta);
-    document.body.appendChild(overlay);
-    
-    document.getElementById('tutorialContinueBtn').addEventListener('click', () => {
-        overlay.remove();
-        tutorialPasoActual++;
-        mostrarPasoTutorial();
-    });
-    
-    document.getElementById('tutorialSkipBtn').addEventListener('click', () => {
-        eliminarListenersTutorial();
-        tutorialActivo = false;
-        tutorialCompletado = true;
-        localStorage.setItem('tutorial_completado', 'true');
-        overlay.remove();
-        renderMenu();
-    });
-}
-
-// ---------- MOSTRAR OVERLAY INFORMATIVO (para pasos interactivos) ----------
-function mostrarOverlayInformativo(paso) {
-    // Eliminar overlay existente
-    let overlayExistente = document.getElementById('tutorialOverlay');
-    if (overlayExistente) overlayExistente.remove();
-    
-    // Determinar si estamos en la pantalla de estadísticas
-    let esPantallaStats = (paso.pantalla === 'stats');
-    
-    let overlay = document.createElement('div');
-    overlay.id = 'tutorialOverlay';
-    
-    if (esPantallaStats) {
-        // Para estadísticas: overlay en esquina inferior derecha (no tapa la tabla)
-        overlay.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            z-index: 3000;
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 2px solid white;
-            pointer-events: none;
-            animation: fadeInScale 0.3s ease;
-            max-width: 280px;
-        `;
-    } else {
-        // Para el resto: overlay superior (como al inicio)
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            z-index: 3000;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-bottom: 3px solid white;
-            pointer-events: none;
-            animation: slideDown 0.3s ease;
-        `;
-    }
-    
-    let progreso = ((tutorialPasoActual + 1) / pasosTutorial.length) * 100;
-    
-    // Si es un paso con temporizador, mostrar cuenta regresiva
-    let temporizadorHTML = '';
-    if (paso.accion === 'temporizador' && paso.tiempo) {
-        temporizadorHTML = `
-            <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); border-radius: 30px; padding: 8px 12px; ${esPantallaStats ? '' : 'max-width: 200px;'}">
-                <span style="color: white; font-size: 0.9rem;">⏳</span>
-                <span id="temporizador" style="color: #ffd700; font-weight: bold; font-size: 1.2rem;">${paso.tiempo}s</span>
-            </div>
-        `;
-    }
-    
-    if (esPantallaStats) {
-        // Versión para estadísticas (compacta, esquina)
-        overlay.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="font-size: 2rem;">${paso.imagen}</div>
-                    <div>
-                        <h3 style="color: white; font-size: 1rem; margin: 0;">${paso.titulo}</h3>
-                        <p style="color: #e0e0e0; font-size: 0.85rem; margin: 5px 0 0 0;">${paso.descripcion}</p>
-                    </div>
-                </div>
-                
-                <div style="background: rgba(255,255,255,0.3); border-radius: 10px; height: 4px; margin: 5px 0;">
-                    <div style="background: #ffd700; width: ${progreso}%; height: 4px; border-radius: 10px;"></div>
-                </div>
-                
-                ${temporizadorHTML}
-                
-                <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
-                    <span style="color: rgba(255,255,255,0.5); font-size: 0.7rem;">Paso ${tutorialPasoActual + 1}/${pasosTutorial.length}</span>
-                </div>
-            </div>
-        `;
-    } else {
-        // Versión para resto de pantallas (barra superior)
-        overlay.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto;">
-                <div style="font-size: 2rem;">${paso.imagen}</div>
-                <div style="flex: 1;">
-                    <h3 style="color: white; font-size: 1rem; margin-bottom: 5px;">${paso.titulo}</h3>
-                    <p style="color: #e0e0e0; font-size: 0.9rem;">${paso.descripcion}</p>
-                    <div style="background: rgba(255,255,255,0.3); border-radius: 10px; height: 4px; margin-top: 5px;">
-                        <div style="background: #ffd700; width: ${progreso}%; height: 4px; border-radius: 10px;"></div>
-                    </div>
-                    ${temporizadorHTML}
-                </div>
-            </div>
-        `;
-    }
-    
-    document.body.appendChild(overlay);
-    
-    // Si es un paso con temporizador, iniciar la cuenta regresiva
-    if (paso.accion === 'temporizador' && paso.tiempo) {
-        iniciarTemporizadorTutorial(paso.tiempo);
-    }
-}
-
-// ---------- FUNCIÓN PARA TEMPORIZADOR ----------
-function iniciarTemporizadorTutorial(segundos) {
-    let tiempoRestante = segundos;
-    let temporizadorElement = document.getElementById('temporizador');
-    
-    let intervalo = setInterval(() => {
-        tiempoRestante--;
-        if (temporizadorElement) {
-            temporizadorElement.textContent = `${tiempoRestante}s`;
-        }
-        
-        if (tiempoRestante <= 0) {
-            clearInterval(intervalo);
-            
-            // Eliminar overlay
-            let overlay = document.getElementById('tutorialOverlay');
-            if (overlay) overlay.remove();
-            
-            // Mostrar toast
-            mostrarToast('⏭️ Continuando...');
-            
-            // Avanzar al siguiente paso
-            setTimeout(() => {
-                tutorialPasoActual++;
-                mostrarPasoTutorial();
-            }, 500);
-        }
-    }, 1000);
-    
-    // Guardar el intervalo para poder limpiarlo si es necesario
-    tutorialListenersActivos.push({ elemento: null, tipo: 'intervalo', listener: intervalo });
-}
-
-// ---------- AÑADE ESTA ANIMACIÓN AL CSS ----------
-const animacionExtra = `
-    @keyframes slideDown {
-        from { transform: translateY(-100%); }
-        to { transform: translateY(0); }
-    }
-`;
-
-// Añadir al styleSheet existente
-styleSheet.textContent += animacionExtra;
-
-// ---------- RENDER MENÚ PARA TUTORIAL ----------
+// ---------- RENDER PARA TUTORIAL ----------
 function renderMenuTutorial() {
     currentScreen = 'menu';
     let html = `
@@ -2245,7 +1723,6 @@ function renderMenuTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- RENDER ADD PLAYER PARA TUTORIAL ----------
 function renderAddPlayerTutorial() {
     let html = `
         <div class="screen" style="padding: 15px;">
@@ -2254,7 +1731,7 @@ function renderAddPlayerTutorial() {
             <div class="glass-card" style="margin: 20px 0;">
                 <input type="text" id="newPlayerName" placeholder="Escribe 'Jugador1'" 
                        style="width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #667eea; 
-                              background: rgba(255,255,255,0.1); color: white; font-size: 1.1rem;">
+                              background: rgba(255,255,255,0.1); color: white;">
             </div>
             
             <button class="btn-modern" id="saveNewPlayer" style="margin: 10px 0;">💾 Guardar</button>
@@ -2264,7 +1741,6 @@ function renderAddPlayerTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- RENDER GROUP MANAGER PARA TUTORIAL ----------
 function renderGroupManagerTutorial() {
     let playersList = players.map((p, index) => `
         <div class="vote-card-modern" style="margin: 5px 0;">
@@ -2290,7 +1766,6 @@ function renderGroupManagerTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- RENDER GAME SETUP PARA TUTORIAL ----------
 function renderGameSetupTutorial() {
     let totalJugadores = players.length;
     
@@ -2335,14 +1810,12 @@ function renderGameSetupTutorial() {
     `;
     app.innerHTML = html;
     
-    // Listeners básicos para el tutorial
     document.getElementById('impRange').addEventListener('input', function() {
         document.getElementById('impCountDisplay').textContent = this.value;
         document.getElementById('ciudCountDisplay').textContent = totalJugadores - this.value;
     });
 }
 
-// ---------- RENDER STATS PARA TUTORIAL ----------
 function renderStatsTutorial() {
     let statsEjemplo = [
         { nombre: "Jugador 1", partidas: 5, victoriasImp: 2, victoriasCiud: 3, totalPuntos: 19 },
@@ -2356,7 +1829,7 @@ function renderStatsTutorial() {
                 <div class="vote-name-modern">${p.nombre}</div>
                 <div class="vote-status-modern">🐺 ${p.victoriasImp} • 🐑 ${p.victoriasCiud}</div>
             </div>
-            <div style="color: #ffd700; font-weight: bold;">${p.totalPuntos} ⭐</div>
+            <div style="color: #ffd700;">${p.totalPuntos} ⭐</div>
         </div>
     `).join('');
 
@@ -2378,7 +1851,6 @@ function renderStatsTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- RENDER ASIGNAR ROLES PARA TUTORIAL ----------
 function renderAsignarRolesTutorial() {
     let paso = pasosTutorial[tutorialPasoActual];
     let esLobo = (paso && (paso.id === 13 || paso.id === 14));
@@ -2444,7 +1916,6 @@ function renderAsignarRolesTutorial() {
     }
 }
 
-// ---------- RENDER JUEGO PARA TUTORIAL ----------
 function renderJuegoTutorial() {
     let html = `
         <div class="screen game-screen-modern" style="padding: 15px;">
@@ -2465,7 +1936,6 @@ function renderJuegoTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- RENDER VOTACIÓN PARA TUTORIAL ----------
 function renderVotacionTutorial() {
     let html = `
         <div class="screen" style="padding: 15px;">
@@ -2506,7 +1976,6 @@ function renderVotacionTutorial() {
     app.innerHTML = html;
 }
 
-// ---------- MOSTRAR MODAL DE RESULTADO PARA TUTORIAL ----------
 function mostrarModalResultadoTutorial() {
     let modal = document.createElement('div');
     modal.id = 'tutorialModal';
@@ -2541,207 +2010,467 @@ function mostrarModalResultadoTutorial() {
     });
 }
 
-// ---------- 🔥 FUNCIÓN PARA CAMBIAR PALABRA DURANTE EL JUEGO (CORREGIDA - SIN REVELAR) ----------
-function cambiarPalabraDuranteJuego() {
-    // Confirmar con el usuario
-    if (!confirm('⚠️ ¿Seguro que quieres cambiar la palabra?\n\nSe reiniciará la asignación de roles para que todos vean la nueva información.')) {
-        return;
-    }
+// ---------- CONFIGURAR LISTENERS DEL TUTORIAL ----------
+function configurarListenerPaso(paso) {
+    eliminarListenersTutorial();
     
-    // Generar nueva palabra de la MISMA categoría
-    let palabrasCategoria = categorias[gameState.categoriaSecreta];
-    let nuevaPalabra;
-    
-    // Asegurar que no sea la misma palabra
-    do {
-        nuevaPalabra = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
-    } while (nuevaPalabra === gameState.palabraSecreta && palabrasCategoria.length > 1);
-    
-    // Actualizar palabra secreta (sin mostrar cuál era)
-    gameState.palabraSecreta = nuevaPalabra;
-    
-    // REINICIAR el índice de asignación de roles
-    gameState.currentRolIndex = 0;
-    
-    // Cambiar la pantalla a asignación de roles
-    currentScreen = 'asignarRoles';
-    
-    // Mostrar feedback GENÉRICO (sin revelar la palabra)
-    mostrarToast('🔄 Palabra cambiada correctamente');
-    
-    // Reproducir sonido de cambio
-    SoundEffects.playRevealSound();
-    
-    // Renderizar la pantalla de asignación de roles
-    renderScreen();
+    setTimeout(() => {
+        switch (paso.accion) {
+            case 'clic':
+                configurarListenerClic(paso);
+                break;
+            case 'clicTutorialIniciar':
+                configurarListenerClicTutorialIniciar(paso);
+                break;
+            case 'escribirYGuardar':
+                configurarListenerEscribirYGuardar(paso);
+                break;
+            case 'moverSlider':
+                configurarListenerSlider(paso);
+                break;
+            case 'marcarCheckbox':
+                configurarListenerCheckbox(paso);
+                break;
+            case 'seleccionarOpcion':
+                configurarListenerSelect(paso);
+                break;
+            case 'clicEnJugador':
+                configurarListenerClicEnJugador(paso);
+                break;
+            case 'temporizador':
+                console.log(`⏳ Paso ${paso.id} con temporizador`);
+                break;
+        }
+    }, 200);
 }
 
-// ---------- RENDER JUEGO PARA TUTORIAL ----------
-function renderJuegoTutorial() {
-    let html = `
-        <div class="screen game-screen-modern">
-            <h2 class="neon-title" style="font-size: 1.8rem;">🔍 Juego en curso</h2>
-            <div class="round-indicator">⚔️ Ronda 1</div>
-            <div class="category-tag">📁 Animales</div>
-            
-            <div class="order-container">
-                <div class="order-title">🔄 Orden de preguntas</div>
-                <div class="order-names">Jugador 1 → Jugador 2 → Jugador 3</div>
-            </div>
-            
-            <div class="time-message">⏳ ¡TIEMPO PARA PREGUNTAR!</div>
-            
-            <button class="btn-modern" id="abrirVotacionBtnTutorial" style="margin: 5px 0;">
-                🗳️ Iniciar Votación
-            </button>
-        </div>
-    `;
-    app.innerHTML = html;
+function configurarListenerClic(paso) {
+    let elemento = document.getElementById(paso.elemento);
+    if (!elemento) return;
     
-    document.getElementById('abrirVotacionBtnTutorial').addEventListener('click', () => {
-        // Eliminar overlay
+    elemento.style.animation = 'pulse 1s infinite';
+    elemento.style.border = '4px solid #ffd700';
+    
+    let listener = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        elemento.style.animation = '';
+        elemento.style.border = '';
+        elemento.removeEventListener('click', listener);
+        
         let overlay = document.getElementById('tutorialOverlay');
         if (overlay) overlay.remove();
         
-        // Avanzar al siguiente paso
-        tutorialPasoActual++;
-        renderVotacionTutorial();
+        mostrarToast(paso.feedback);
         
-        // Mostrar overlay del siguiente paso
-        setTimeout(() => {
-            let siguientePaso = pasosTutorial[tutorialPasoActual];
-            if (siguientePaso) {
-                mostrarOverlayTutorial(siguientePaso);
-                if (siguientePaso.accion !== 'esperar' && siguientePaso.accion !== 'final') {
-                    configurarListenerPaso(siguientePaso);
-                }
-            }
-        }, 300);
-    });
-}
-
-/// ---------- RENDER VOTACIÓN PARA TUTORIAL ----------
-function renderVotacionTutorial() {
-    let html = `
-        <div class="screen" style="padding: 15px;">
-            <h2 class="neon-title" style="font-size: 1.8rem;">🗳️ VOTACIÓN</h2>
-            <div class="round-indicator">Ronda 1</div>
-            
-            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2); margin: 10px 0;">
-                <div style="color: white; font-size: 1rem;">🎯 Le toca votar a: Jugador 1</div>
-            </div>
-            
-            <div class="players-list" style="margin: 10px 0;">
-                <div class="vote-card-modern">
-                    <div class="vote-avatar-modern">J1</div>
-                    <div class="vote-info-modern">
-                        <div class="vote-name-modern">Jugador 1</div>
-                        <div class="vote-status-modern">👤 Jugador</div>
-                    </div>
-                </div>
-                <div class="vote-card-modern">
-                    <div class="vote-avatar-modern">J2</div>
-                    <div class="vote-info-modern">
-                        <div class="vote-name-modern">Jugador 2</div>
-                        <div class="vote-status-modern">👤 Jugador</div>
-                    </div>
-                </div>
-                <div class="vote-card-modern">
-                    <div class="vote-avatar-modern">J3</div>
-                    <div class="vote-info-modern">
-                        <div class="vote-name-modern">Jugador 3</div>
-                        <div class="vote-status-modern">👤 Jugador</div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn-modern" id="finalizarVotacionBtnTutorial" style="width: 100%;">
-                🔍 Ver Resultado
-            </button>
-        </div>
-    `;
-    app.innerHTML = html;
-    
-    document.getElementById('finalizarVotacionBtnTutorial').addEventListener('click', () => {
-        mostrarModalResultadoTutorial();
-    });
-}
-
-// ---------- MOSTRAR MODAL DE RESULTADO PARA TUTORIAL ----------
-function mostrarModalResultadoTutorial() {
-    // Crear modal
-    let modal = document.createElement('div');
-    modal.id = 'tutorialModal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.9);
-        z-index: 3500;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        animation: fadeInScale 0.3s ease;
-    `;
-    
-    let modalContent = document.createElement('div');
-    modalContent.style.cssText = `
-        background: linear-gradient(135deg, #00b09b, #96c93d);
-        border-radius: 30px;
-        padding: 30px;
-        max-width: 350px;
-        width: 100%;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        border: 3px solid white;
-        text-align: center;
-    `;
-    
-    modalContent.innerHTML = `
-        <div style="font-size: 4rem; margin-bottom: 15px;">🎉</div>
-        <h2 style="color: white; font-size: 2rem; margin-bottom: 15px;">¡LOBO DESCUBIERTO!</h2>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin: 15px 0;">
-            <p style="color: #ffd700; font-size: 1.2rem;">🐺 El Lobo era:</p>
-            <p style="color: white; font-size: 2rem; font-weight: bold;">Jugador 1</p>
-        </div>
-        <p style="color: white; margin-bottom: 20px;">✅ ¡Correcto! Has descubierto al lobo.</p>
-        
-        <button id="tutorialModalCloseBtn" style="background: white; color: #1a1a2e; border: none; border-radius: 30px; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%;">
-            ✖ Cerrar
-        </button>
-    `;
-    
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    // Configurar botón cerrar
-    document.getElementById('tutorialModalCloseBtn').addEventListener('click', () => {
-        modal.remove();
-        
-        // Avanzar al siguiente paso del tutorial
         setTimeout(() => {
             tutorialPasoActual++;
             mostrarPasoTutorial();
         }, 500);
+    };
+    
+    elemento.addEventListener('click', listener);
+    tutorialListenersActivos.push({elemento, tipo: 'click', listener});
+}
+
+function configurarListenerClicTutorialIniciar(paso) {
+    let elemento = document.getElementById(paso.elemento);
+    if (!elemento) return;
+    
+    elemento.style.animation = 'pulse 1s infinite';
+    elemento.style.border = '4px solid #ffd700';
+    
+    let listener = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        elemento.style.animation = '';
+        elemento.style.border = '';
+        elemento.removeEventListener('click', listener);
+        
+        let overlay = document.getElementById('tutorialOverlay');
+        if (overlay) overlay.remove();
+        
+        mostrarToast(paso.feedback);
+        
+        setTimeout(() => {
+            tutorialPasoActual++;
+            renderAsignarRolesTutorial();
+            
+            setTimeout(() => {
+                let siguientePaso = pasosTutorial[tutorialPasoActual];
+                if (siguientePaso) {
+                    mostrarOverlayTutorial(siguientePaso);
+                    if (siguientePaso.accion !== 'esperar' && siguientePaso.accion !== 'final') {
+                        configurarListenerPaso(siguientePaso);
+                    }
+                }
+            }, 300);
+        }, 500);
+    };
+    
+    elemento.addEventListener('click', listener);
+    tutorialListenersActivos.push({elemento, tipo: 'click', listener});
+}
+
+function configurarListenerEscribirYGuardar(paso) {
+    let input = document.getElementById(paso.elementoInput);
+    let boton = document.getElementById(paso.elementoBoton);
+    
+    if (!input || !boton) return;
+    
+    input.style.animation = 'pulse 1s infinite';
+    input.style.border = '4px solid #ffd700';
+    boton.style.animation = 'pulse 1s infinite';
+    boton.style.border = '4px solid #ffd700';
+    
+    let inputListener = () => {
+        if (input.value.trim() !== '') {
+            boton.style.animation = 'pulse 1s infinite';
+            boton.style.border = '4px solid #ffd700';
+        }
+    };
+    
+    let botonListener = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (input.value.trim() !== '') {
+            input.style.animation = '';
+            input.style.border = '';
+            boton.style.animation = '';
+            boton.style.border = '';
+            
+            input.removeEventListener('input', inputListener);
+            boton.removeEventListener('click', botonListener);
+            
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            
+            mostrarToast(paso.feedback);
+            
+            setTimeout(() => {
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            }, 500);
+        }
+    };
+    
+    input.addEventListener('input', inputListener);
+    boton.addEventListener('click', botonListener);
+    
+    tutorialListenersActivos.push({elemento: input, tipo: 'input', listener: inputListener});
+    tutorialListenersActivos.push({elemento: boton, tipo: 'click', listener: botonListener});
+}
+
+function configurarListenerSlider(paso) {
+    let slider = document.getElementById(paso.elemento);
+    if (!slider) return;
+    
+    slider.style.animation = 'pulse 1s infinite';
+    slider.style.border = '4px solid #ffd700';
+    
+    let listener = () => {
+        if (parseInt(slider.value) === paso.valorObjetivo) {
+            slider.style.animation = '';
+            slider.style.border = '';
+            
+            slider.removeEventListener('input', listener);
+            
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            
+            mostrarToast(paso.feedback);
+            
+            setTimeout(() => {
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            }, 500);
+        }
+    };
+    
+    slider.addEventListener('input', listener);
+    tutorialListenersActivos.push({elemento: slider, tipo: 'input', listener});
+}
+
+function configurarListenerCheckbox(paso) {
+    let checkbox = document.getElementById(paso.elemento);
+    if (!checkbox) return;
+    
+    checkbox.style.animation = 'pulse 1s infinite';
+    checkbox.style.outline = '4px solid #ffd700';
+    
+    let listener = () => {
+        if (checkbox.checked) {
+            checkbox.style.animation = '';
+            checkbox.style.outline = '';
+            
+            checkbox.removeEventListener('change', listener);
+            
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            
+            mostrarToast(paso.feedback);
+            
+            setTimeout(() => {
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            }, 500);
+        }
+    };
+    
+    checkbox.addEventListener('change', listener);
+    tutorialListenersActivos.push({elemento: checkbox, tipo: 'change', listener});
+}
+
+function configurarListenerSelect(paso) {
+    let select = document.getElementById(paso.elemento);
+    if (!select) return;
+    
+    select.style.animation = 'pulse 1s infinite';
+    select.style.border = '4px solid #ffd700';
+    
+    let listener = () => {
+        if (select.value === paso.valorObjetivo) {
+            select.style.animation = '';
+            select.style.border = '';
+            
+            select.removeEventListener('change', listener);
+            
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            
+            mostrarToast(paso.feedback);
+            
+            setTimeout(() => {
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            }, 500);
+        }
+    };
+    
+    select.addEventListener('change', listener);
+    tutorialListenersActivos.push({elemento: select, tipo: 'change', listener});
+}
+
+function configurarListenerClicEnJugador(paso) {
+    let jugadores = document.querySelectorAll(`.${paso.elemento}`);
+    if (jugadores.length === 0) return;
+    
+    let jugadorObjetivo = jugadores[paso.indiceJugador];
+    if (!jugadorObjetivo) return;
+    
+    jugadorObjetivo.style.animation = 'pulse 1s infinite';
+    jugadorObjetivo.style.border = '4px solid #ffd700';
+    
+    let listener = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        jugadorObjetivo.style.animation = '';
+        jugadorObjetivo.style.border = '';
+        
+        jugadorObjetivo.removeEventListener('click', listener);
+        
+        let overlay = document.getElementById('tutorialOverlay');
+        if (overlay) overlay.remove();
+        
+        mostrarToast(paso.feedback);
+        
+        setTimeout(() => {
+            tutorialPasoActual++;
+            mostrarPasoTutorial();
+        }, 500);
+    };
+    
+    jugadorObjetivo.addEventListener('click', listener);
+    tutorialListenersActivos.push({elemento: jugadorObjetivo, tipo: 'click', listener});
+}
+
+// ---------- MOSTRAR OVERLAY DEL TUTORIAL ----------
+function mostrarOverlayTutorial(paso) {
+    let overlayExistente = document.getElementById('tutorialOverlay');
+    if (overlayExistente) overlayExistente.remove();
+    
+    if (paso.accion === 'esperar' || paso.accion === 'final') {
+        mostrarOverlayConBoton(paso);
+    } else {
+        mostrarOverlayInformativo(paso);
+    }
+}
+
+function mostrarOverlayConBoton(paso) {
+    let overlay = document.createElement('div');
+    overlay.id = 'tutorialOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 3000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        pointer-events: auto;
+        animation: fadeInScale 0.3s ease;
+    `;
+    
+    let progreso = ((tutorialPasoActual + 1) / pasosTutorial.length) * 100;
+    
+    overlay.innerHTML = `
+        <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 30px; padding: 25px; max-width: 350px; border: 3px solid white; text-align: center;">
+            <div style="font-size: 4rem;">${paso.imagen}</div>
+            <h2 style="color: white;">${paso.titulo}</h2>
+            <p style="color: #e0e0e0;">${paso.descripcion}</p>
+            
+            <div style="background: rgba(255,255,255,0.3); border-radius: 10px; height: 8px; margin: 15px 0;">
+                <div style="background: #ffd700; width: ${progreso}%; height: 8px; border-radius: 10px;"></div>
+            </div>
+            <p style="color: white;">Paso ${tutorialPasoActual + 1}/${pasosTutorial.length}</p>
+            
+            <button id="tutorialContinueBtn" class="btn-modern" style="background: #4CAF50; width: 100%; margin-top: 10px;">👉 Continuar</button>
+            <button id="tutorialSkipBtn" class="btn-modern" style="background: #2a2a3a; width: 100%; margin-top: 10px;">⏭️ Omitir</button>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    document.getElementById('tutorialContinueBtn').addEventListener('click', () => {
+        overlay.remove();
+        tutorialPasoActual++;
+        mostrarPasoTutorial();
+    });
+    
+    document.getElementById('tutorialSkipBtn').addEventListener('click', () => {
+        eliminarListenersTutorial();
+        tutorialActivo = false;
+        tutorialCompletado = true;
+        localStorage.setItem('tutorial_completado', 'true');
+        overlay.remove();
+        renderMenu();
     });
 }
 
-// ---------- TERMINAR JUEGO (CORREGIDO - MÚLTIPLES LOBOS) ----------
+function mostrarOverlayInformativo(paso) {
+    let esPantallaStats = (paso.pantalla === 'stats');
+    
+    let overlay = document.createElement('div');
+    overlay.id = 'tutorialOverlay';
+    
+    if (esPantallaStats) {
+        overlay.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: 3000;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid white;
+            pointer-events: none;
+            animation: fadeInScale 0.3s ease;
+            max-width: 280px;
+        `;
+    } else {
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: 3000;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-bottom: 3px solid white;
+            pointer-events: none;
+            animation: slideDown 0.3s ease;
+        `;
+    }
+    
+    let progreso = ((tutorialPasoActual + 1) / pasosTutorial.length) * 100;
+    
+    let temporizadorHTML = '';
+    if (paso.accion === 'temporizador' && paso.tiempo) {
+        temporizadorHTML = `
+            <div style="margin-top: 10px; background: rgba(0,0,0,0.3); border-radius: 30px; padding: 8px; text-align: center;">
+                <span style="color: #ffd700; font-weight: bold;" id="temporizador">${paso.tiempo}s</span>
+            </div>
+        `;
+    }
+    
+    if (esPantallaStats) {
+        overlay.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="font-size: 2rem;">${paso.imagen}</div>
+                    <div>
+                        <h3 style="color: white; font-size: 1rem;">${paso.titulo}</h3>
+                        <p style="color: #e0e0e0; font-size: 0.85rem;">${paso.descripcion}</p>
+                    </div>
+                </div>
+                ${temporizadorHTML}
+            </div>
+        `;
+    } else {
+        overlay.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto;">
+                <div style="font-size: 2rem;">${paso.imagen}</div>
+                <div style="flex: 1;">
+                    <h3 style="color: white; font-size: 1rem;">${paso.titulo}</h3>
+                    <p style="color: #e0e0e0; font-size: 0.9rem;">${paso.descripcion}</p>
+                    ${temporizadorHTML}
+                </div>
+            </div>
+        `;
+    }
+    
+    document.body.appendChild(overlay);
+    
+    if (paso.accion === 'temporizador' && paso.tiempo) {
+        iniciarTemporizadorTutorial(paso.tiempo);
+    }
+}
+
+function iniciarTemporizadorTutorial(segundos) {
+    let tiempoRestante = segundos;
+    let temporizadorElement = document.getElementById('temporizador');
+    
+    let intervalo = setInterval(() => {
+        tiempoRestante--;
+        if (temporizadorElement) {
+            temporizadorElement.textContent = `${tiempoRestante}s`;
+        }
+        
+        if (tiempoRestante <= 0) {
+            clearInterval(intervalo);
+            
+            let overlay = document.getElementById('tutorialOverlay');
+            if (overlay) overlay.remove();
+            
+            mostrarToast('⏭️ Continuando...');
+            
+            setTimeout(() => {
+                tutorialPasoActual++;
+                mostrarPasoTutorial();
+            }, 500);
+        }
+    }, 1000);
+    
+    tutorialListenersActivos.push({ elemento: null, tipo: 'intervalo', listener: intervalo });
+}
+
+// ---------- TERMINAR JUEGO ----------
 function terminarJuego(ganador) {
     SoundEffects.playRoundEndSound(ganador);
     
     let impostorIndexes = gameState.impostorIndexes;
     let ciudadanoIndexes = gameState.playersInGame.map((_, idx) => idx).filter(i => !impostorIndexes.includes(i));
 
-    // Verificar si TODOS los lobos han sido eliminados
     let todosLobosEliminados = impostorIndexes.every(idx => gameState.eliminatedPlayers.includes(idx));
     
     if (ganador === 'ciudadanos' || todosLobosEliminados) {
-        // 🐑 GANAN LAS OVEJAS (todos los lobos descubiertos)
-        
-        // Ovejas vivas ganan puntos
         ciudadanoIndexes.forEach(idx => {
             if (!gameState.eliminatedPlayers.includes(idx)) {
                 let p = gameState.playersInGame[idx];
@@ -2754,7 +2483,6 @@ function terminarJuego(ganador) {
             }
         });
         
-        // Lobos (todos, incluso los eliminados) pierden
         impostorIndexes.forEach(idx => {
             let p = gameState.playersInGame[idx];
             let originalPlayer = players.find(pl => pl.id === p.id);
@@ -2764,9 +2492,6 @@ function terminarJuego(ganador) {
             }
         });
     } else {
-        // 🐺 GANA EL LOBO (o los lobos)
-        
-        // Lobos vivos ganan puntos
         impostorIndexes.forEach(idx => {
             if (!gameState.eliminatedPlayers.includes(idx)) {
                 let p = gameState.playersInGame[idx];
@@ -2779,7 +2504,6 @@ function terminarJuego(ganador) {
             }
         });
         
-        // Ovejas (vivas o muertas) pierden
         ciudadanoIndexes.forEach(idx => {
             let p = gameState.playersInGame[idx];
             let originalPlayer = players.find(pl => pl.id === p.id);
@@ -2796,98 +2520,65 @@ function terminarJuego(ganador) {
     renderFinRonda(ganador);
 }
 
-// ---------- FIN DE RONDA (CON ESTILO MEJORADO Y PUNTOS SIMPLIFICADOS) ----------
+// ---------- FIN DE RONDA ----------
 function renderFinRonda(ganador) {
-    // Verificar si TODOS los lobos han sido eliminados
     let todosLobosEliminados = gameState.impostorIndexes.every(idx => gameState.eliminatedPlayers.includes(idx));
     
     let mensaje = (ganador === 'ciudadanos' || todosLobosEliminados)
         ? '🎉 ¡VICTORIA DE LAS OVEJAS!' 
         : '🐺 ¡DERROTA! LOS LOBOS DEVORAN EL REBAÑO';
     
-    // Color de fondo según el ganador
     let fondoGradiente = (ganador === 'ciudadanos' || todosLobosEliminados)
-        ? 'linear-gradient(135deg, #00b09b, #96c93d)'  // Verde para ovejas
-        : 'linear-gradient(135deg, #f43b47, #453a94)'; // Rojo/oscuro para lobos
+        ? 'linear-gradient(135deg, #00b09b, #96c93d)'
+        : 'linear-gradient(135deg, #f43b47, #453a94)';
     
-    // Texto de puntos según el ganador
     let puntosTexto = (ganador === 'ciudadanos' || todosLobosEliminados)
         ? '🐑 OVEJAS +2 ⭐'
         : `🐺 ${gameState.impostorIndexes.length === 1 ? 'LOBO' : 'LOBOS'} +5 ⭐`;
     
     let impostorNames = gameState.impostorIndexes.map(idx => gameState.playersInGame[idx].nombre).join(', ');
     
-    // Adaptar el mensaje según si hay uno o múltiples lobos
     let lobosTitulo = gameState.impostorIndexes.length === 1 
         ? '🐺 El Lobo era:' 
         : '🐺 Los Lobos eran:';
     
     let lobosInfo = gameState.impostorIndexes.length > 1 
-        ? `<p style="color: #a0a0a0; margin-top: 5px;">Había ${gameState.impostorIndexes.length} lobos en la partida</p>` 
+        ? `<p style="color: #a0a0a0;">Había ${gameState.impostorIndexes.length} lobos</p>` 
         : '';
     
     let html = `
         <div class="screen" style="padding: 15px; justify-content: center;">
-            <!-- Tarjeta principal de resultado -->
-            <div style="background: ${fondoGradiente}; border-radius: 30px; padding: 25px; margin: 0; 
-                        box-shadow: 0 15px 30px rgba(0,0,0,0.5); border: 2px solid white;">
+            <div style="background: ${fondoGradiente}; border-radius: 30px; padding: 25px; border: 2px solid white;">
+                <h1 style="color: white; font-size: 1.8rem; text-align: center;">${mensaje}</h1>
                 
-                <h1 style="color: white; font-size: 1.8rem; font-weight: bold; text-align: center; 
-                          text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 20px;">
-                    ${mensaje}
-                </h1>
-                
-                <!-- Información del lobo/lobos -->
-                <div class="glass-card" style="margin: 15px 0; background: rgba(0,0,0,0.3);">
-                    <p style="color: #ffd700; font-size: 1.1rem; margin-bottom: 5px;">${lobosTitulo}</p>
-                    <p style="color: white; font-size: 1.8rem; font-weight: bold; text-align: center;
-                              text-shadow: 0 0 10px rgba(255,255,255,0.5);">
-                        ${impostorNames}
-                    </p>
+                <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin: 15px 0;">
+                    <p style="color: #ffd700;">${lobosTitulo}</p>
+                    <p style="color: white; font-size: 1.8rem;">${impostorNames}</p>
                     ${lobosInfo}
                 </div>
                 
-                <!-- Palabra y categoría -->
-                <div style="background: rgba(255,255,255,0.15); border-radius: 20px; padding: 15px; margin: 15px 0;
-                            border: 1px solid rgba(255,255,255,0.3);">
-                    <p style="color: white; font-size: 1.1rem; margin-bottom: 5px;">📝 Palabra secreta:</p>
-                    <p style="color: #ffd700; font-size: 2rem; font-weight: bold; text-align: center;">
-                        ${gameState.palabraSecreta}
-                    </p>
-                    <p style="color: #e0e0e0; text-align: center; margin-top: 5px;">
-                        📁 ${gameState.categoriaSecreta}
-                    </p>
+                <div style="background: rgba(255,255,255,0.15); border-radius: 15px; padding: 15px;">
+                    <p style="color: #ffd700; font-size: 1.5rem;">${gameState.palabraSecreta}</p>
+                    <p style="color: #e0e0e0;">${gameState.categoriaSecreta}</p>
                 </div>
                 
-                <!-- Puntos (simplificado) -->
-                <div class="order-container" style="margin: 15px 0; text-align: center; background: #2a2a3a;">
-                    <p style="color: white; font-size: 1.2rem; margin-bottom: 5px;">🏆 PUNTOS</p>
-                    <p style="color: #ffd700; font-size: 2.2rem; font-weight: bold;">${puntosTexto}</p>
+                <div style="background: #2a2a3a; border-radius: 15px; padding: 15px; margin-top: 15px; text-align: center;">
+                    <p style="color: #ffd700; font-size: 1.5rem;">${puntosTexto}</p>
                 </div>
             </div>
             
-            <!-- Botones de acción -->
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                <button class="btn-modern" id="nuevaPartida" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 15px;">
-                    🔄 Jugar otra ronda
-                </button>
-                <button class="btn-modern" id="menuPrincipal" style="background: #2a2a3a; padding: 12px;">
-                    🏠 Volver al Corral
-                </button>
-            </div>
+            <button class="btn-modern" id="nuevaPartida" style="margin-top: 20px;">🔄 Jugar otra ronda</button>
+            <button class="btn-modern" id="menuPrincipal" style="background: #2a2a3a; margin-top: 10px;">🏠 Volver</button>
         </div>
     `;
     
     app.innerHTML = html;
     
-    document.getElementById('nuevaPartida')?.addEventListener('click', () => {
-        iniciarPartida();
-    });
-    
+    document.getElementById('nuevaPartida')?.addEventListener('click', iniciarPartida);
     document.getElementById('menuPrincipal')?.addEventListener('click', renderMenu);
 }
 
-// ---------- FUNCIÓN AUXILIAR PARA TOAST ----------
+// ---------- TOAST ----------
 function mostrarToast(mensaje) {
     let toast = document.createElement('div');
     toast.style.cssText = `
