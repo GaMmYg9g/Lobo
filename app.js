@@ -237,10 +237,11 @@ const VERSION_HISTORY = {
             fecha: "2026-02-15",
             tipo: "major",
             cambios: [
-                "🔄 Sistema de cambiar palabra durante el juego",
-                "🎮 Tutorial interactivo completo (22 pasos)",
-                "🐺 Múltiples lobos con lógica mejorada",
-                "🎨 Rediseño completo con glass morphism",
+                "📝Sistema ingormativo de actualización",
+                "🔄 Sistema para cambiar palabra durante el juego",
+                "🎮 Tutorial interactivo y completo",
+                "🐺 Múltiples lobos en las partidas",
+                "🎨 Rediseño visual completo",
                 "📊 Estadísticas con medallas y ranking",
                 "🎵 Música ambiental y efectos de sonido",
                 "🐑 Orden aleatorio de preguntas",
@@ -256,12 +257,12 @@ const VERSION_HISTORY = {
                 "🎵 Música ambiental añadida",
                 "🔊 Efectos de sonido para acciones",
                 "🐑 Sistema de votación mejorado",
-                "📱 Diseño responsive para móviles"
+                "📱 Diseño mejorado"
             ]
         },
         {
             version: "1.0.0",
-            nombre: "Alpha",
+            nombre: "Beta",
             fecha: "2026-01-15",
             tipo: "major",
             cambios: [
