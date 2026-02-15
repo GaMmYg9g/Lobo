@@ -237,7 +237,7 @@ const VERSION_HISTORY = {
             fecha: "2026-02-15",
             tipo: "major",
             cambios: [
-                "📝Sistema ingormativo de actualización",
+                "📝Sistema informativo de actualización",
                 "🔄 Sistema para cambiar palabra durante el juego",
                 "🎮 Tutorial interactivo y completo",
                 "🐺 Múltiples lobos en las partidas",
