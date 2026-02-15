@@ -636,37 +636,41 @@ function renderScreen() {
     else renderMenu();
 }
 
-/// ---------- MENÚ PRINCIPAL (ACTUALIZADO) ----------
+//// ---------- MENÚ PRINCIPAL (CON ESTILO MEJORADO) ----------
 function renderMenu() {
     currentScreen = 'menu';
     let html = `
-        <div class="screen">
-            <h1>🐑Ovejas y Lobos🐺</h1>
-            <p class="subtitle">¡Descubre el Lobo entre las Ovejas antes de que sea Tarde!</p>
+        <div class="screen" style="padding: 15px;">
+            <h1 class="neon-title">🐑Ovejas y Lobos🐺</h1>
+            <p class="subtitle" style="color: #a0a0a0; text-align: center; margin-bottom: 20px;">¡Descubre al Lobo antes de que sea tarde!</p>
             
-            <div style="display: flex; justify-content: center; gap: 10px; margin: 10px 0;">
-                <button class="btn btn-music" id="musicOnBtn" style="background: #4CAF50; ${AmbientMusic.isPlaying ? 'display: none;' : ''}">🎵 Activar Música</button>
-                <button class="btn btn-music" id="musicOffBtn" style="background: #f44336; ${!AmbientMusic.isPlaying ? 'display: none;' : ''}">🔇 Silenciar</button>
+            <!-- Controles de música con estilo -->
+            <div class="glass-card" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                <button class="btn-modern" id="musicOnBtn" style="background: #4CAF50; flex: 1; ${AmbientMusic.isPlaying ? 'display: none;' : ''}">🎵 Activar</button>
+                <button class="btn-modern" id="musicOffBtn" style="background: #f44336; flex: 1; ${!AmbientMusic.isPlaying ? 'display: none;' : ''}">🔇 Silenciar</button>
             </div>
             
-            <!-- 🔥 NUEVO: Botón de Tutorial -->
-            <div style="margin: 10px 0;">
-                <button class="btn btn-info" id="btnTutorial" style="background: #ff9800; color: white; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                    📖 ${tutorialCompletado ? 'Ver Tutorial nuevamente' : '¡NUEVO! Tutorial interactivo'}
+            <!-- Botón de Tutorial destacado -->
+            <div style="margin: 15px 0;">
+                <button class="btn-warning-modern" id="btnTutorial" style="width: 100%;">
+                    📖 ${tutorialCompletado ? 'Ver Tutorial' : '🎮 ¡Tutorial Interactivo!'}
                 </button>
             </div>
             
-            <div class="menu-grid">
-                <button class="btn btn-primary" id="btnAddPlayer">➕ Agregar Jugador</button>
-                <button class="btn btn-primary" id="btnGroupManager">🐑 Rebaño 🐑</button>
-                <button class="btn btn-primary" id="btnDictionary">📚 Diccionario</button>
-                <button class="btn btn-primary" id="btnGameSetup">⚙️ Configurar Partida</button>
-                <button class="btn btn-primary" id="btnStats">📊 Estadísticas</button>
-                <button class="btn btn-success" id="btnStartGame">▶ Iniciar Partida</button>
+            <!-- Menú principal con tarjetas -->
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-modern" id="btnAddPlayer">➕ Agregar Jugador</button>
+                <button class="btn-modern" id="btnGroupManager">🐑 Rebaño</button>
+                <button class="btn-modern" id="btnDictionary">📚 Diccionario</button>
+                <button class="btn-modern" id="btnGameSetup">⚙️ Configurar</button>
+                <button class="btn-modern" id="btnStats">📊 Estadísticas</button>
+                <button class="btn-modern" id="btnStartGame" style="background: linear-gradient(135deg, #00b09b, #96c93d);">▶ Iniciar Partida</button>
             </div>
         </div>
     `;
     app.innerHTML = html;
+    
+    // ... event listeners (igual que antes) ...
     
     document.getElementById('musicOnBtn')?.addEventListener('click', () => {
         AmbientMusic.play();
@@ -689,16 +693,26 @@ function renderMenu() {
     document.getElementById('btnStartGame')?.addEventListener('click', () => iniciarPartida());
 }
 
-// ---------- AGREGAR JUGADOR ----------
+/// ---------- AGREGAR JUGADOR (CON ESTILO MEJORADO) ----------
 function renderAddPlayer() {
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>Nuevo Jugador</h2>
-            <input type="text" id="newPlayerName" placeholder="Nombre del jugador">
-            <button class="btn btn-primary" id="saveNewPlayer">Guardar</button>
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">➕ Nuevo Jugador</h2>
+            
+            <div class="glass-card" style="margin: 20px 0;">
+                <input type="text" id="newPlayerName" placeholder="Nombre del jugador" 
+                       style="width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #667eea; 
+                              background: rgba(255,255,255,0.1); color: white; font-size: 1.1rem;
+                              box-shadow: 0 0 15px rgba(102,126,234,0.3);">
             </div>
+            
+            <button class="btn-modern" id="saveNewPlayer" style="margin: 10px 0; padding: 15px; font-size: 1.1rem;">
+                💾 Guardar Jugador
+            </button>
+            
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 10px;">
+                🔙 Volver al Corral
+            </button>
         </div>
     `;
     app.innerHTML = html;
@@ -719,34 +733,47 @@ function renderAddPlayer() {
             });
             localStorage.setItem('undercover_players', JSON.stringify(players));
             renderGroupManager();
-        } else alert('Escribe un nombre');
+        } else {
+            mostrarToast('❌ Escribe un nombre');
+        }
     });
     
     document.getElementById('backToMenu')?.addEventListener('click', renderMenu);
 }
 
-// ---------- GESTIÓN DE GRUPO ----------
+// ---------- GESTIÓN DE GRUPO (CON ESTILO MEJORADO) ----------
 function renderGroupManager() {
     let playersList = players.map((p, index) => `
-        <div class="player-item animate-slide-up" style="animation-delay: ${index * 0.1}s;">
-            <span class="player-name">${p.nombre}</span>
-            <div class="player-actions">
-                <button class="edit-player" data-index="${index}">✏️</button>
-                <button class="delete-player" data-index="${index}">❌</button>
+        <div class="vote-card-modern" style="animation-delay: ${index * 0.1}s; margin: 5px 0;">
+            <div class="vote-avatar-modern">${p.nombre.charAt(0).toUpperCase()}</div>
+            <div class="vote-info-modern">
+                <div class="vote-name-modern">${p.nombre}</div>
+                <div class="vote-status-modern">🐑 Oveja del rebaño</div>
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <button class="edit-player" data-index="${index}" 
+                        style="background: #ff9800; border: none; border-radius: 10px; padding: 8px 12px; color: white; cursor: pointer;">✏️</button>
+                <button class="delete-player" data-index="${index}" 
+                        style="background: #f44336; border: none; border-radius: 10px; padding: 8px 12px; color: white; cursor: pointer;">❌</button>
             </div>
         </div>
-    `).join('') || '<p style="color: gray;">No hay jugadores. Agrega uno.</p>';
+    `).join('') || '<p style="color: gray; text-align: center; padding: 20px;">🐑 No hay ovejas en el rebaño. Agrega una.</p>';
 
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>🐑 Rebaño 🐑</h2>
-            <button class="btn btn-primary" id="addNewFromGroup">➕ Nuevo</button>
-            <div class="players-list">
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">🐑 Rebaño 🐑</h2>
+            
+            <button class="btn-modern" id="addNewFromGroup" style="margin: 10px 0; background: linear-gradient(135deg, #00b09b, #96c93d);">
+                ➕ Agregar Nueva Oveja
+            </button>
+            
+            <div class="glass-card" style="max-height: 400px; overflow-y: auto; padding: 10px;">
                 ${playersList}
             </div>
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
-            </div>
+            
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 15px;">
+                🔙 Volver al Corral
+            </button>
         </div>
     `;
     app.innerHTML = html;
@@ -776,31 +803,33 @@ function renderGroupManager() {
     });
 }
 
-// ---------- DICCIONARIO CON CATEGORÍAS ----------
+// ---------- DICCIONARIO (CON ESTILO MEJORADO) ----------
 function renderDictionary() {
     let categoriasHtml = Object.keys(categorias).map(cat => `
-        <div style="margin-bottom: 20px;" class="animate-slide-up">
-            <h3 style="color: white; margin-bottom: 10px;">📁 ${cat}</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px;">
+        <div class="glass-card" style="margin-bottom: 20px; padding: 15px;">
+            <h3 style="color: #ffd700; margin-bottom: 15px; font-size: 1.3rem;">📁 ${cat}</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 ${categorias[cat].map(palabra => `
-                    <span style="background: #2a2a3a; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">${palabra}</span>
+                    <span style="background: rgba(102,126,234,0.2); border: 1px solid #667eea; 
+                               color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem;
+                               box-shadow: 0 2px 5px rgba(0,0,0,0.2);">${palabra}</span>
                 `).join('')}
             </div>
         </div>
     `).join('');
 
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>📚 Diccionario por Categorías</h2>
-            <p style="color: #a0a0a0; text-align: center; margin-bottom: 15px;">Cada categoría tiene 25 palabras</p>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">📚 Diccionario</h2>
+            <p style="color: #a0a0a0; text-align: center; margin-bottom: 15px;">${Object.keys(categorias).length} categorías • 25 palabras cada una</p>
             
-            <div style="max-height: 400px; overflow-y: auto; padding: 10px;">
+            <div style="max-height: 450px; overflow-y: auto; padding: 5px;">
                 ${categoriasHtml}
             </div>
             
-            <div style="margin-top: 20px;">
-                <button class="btn btn-primary" id="btnVolverDic">Volver al Corral</button>
-            </div>
+            <button class="btn-modern" id="btnVolverDic" style="background: #2a2a3a; margin-top: 15px;">
+                🔙 Volver al Corral
+            </button>
         </div>
     `;
     app.innerHTML = html;
@@ -808,11 +837,11 @@ function renderDictionary() {
     document.getElementById('btnVolverDic')?.addEventListener('click', renderMenu);
 }
 
-// ---------- CONFIGURACIÓN DE PARTIDA (CON BOTÓN GUARDAR) ----------
+// ---------- CONFIGURACIÓN DE PARTIDA (CON ESTILO MEJORADO) ----------
 function renderGameSetup() {
     let totalJugadores = players.length;
     
-    // Cargar configuración guardada (si existe)
+    // Cargar configuración guardada
     let configGuardada = JSON.parse(localStorage.getItem('undercover_config')) || {
         numImpostores: 1,
         impostorVeCategoria: false,
@@ -820,78 +849,81 @@ function renderGameSetup() {
     };
     
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>⚙️ Configurar Partida</h2>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">⚙️ Configurar</h2>
             
-            <div style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 15px; margin: 10px 0; text-align: center;">
-                <h3 style="color: white; margin: 0;">🎮 Configuración de la partida</h3>
-            </div>
-            
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 10px;">📊 Jugadores</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; background: #2a2a3a; border-radius: 15px; padding: 15px;">
-                    <span style="color: white;">Disponibles:</span>
-                    <span style="color: #ffd700; font-size: 1.5rem; font-weight: bold;">${totalJugadores}</span>
+            <!-- Jugadores disponibles -->
+            <div class="order-container" style="margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: white;">🐑 Ovejas disponibles:</span>
+                    <span style="color: #ffd700; font-size: 1.8rem; font-weight: bold;">${totalJugadores}</span>
                 </div>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
+            <!-- Roles -->
+            <div class="glass-card" style="margin: 15px 0;">
                 <h3 style="color: white; margin-bottom: 15px;">🎭 Roles</h3>
                 
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span style="color: white;">🐺LOBO/S:</span>
+                        <span style="color: white;">🐺 Lobos:</span>
                         <span style="color: #ffd700; font-weight: bold; background: #2a2a3a; padding: 5px 15px; border-radius: 20px;" id="impCountDisplay">${configGuardada.numImpostores}</span>
                     </div>
-                    <input type="range" id="impRange" min="1" max="${Math.max(1, Math.min(3, Math.floor(totalJugadores/2)))}" value="${configGuardada.numImpostores}" step="1" style="width: 100%;">
+                    <input type="range" id="impRange" min="1" max="${Math.max(1, Math.min(3, Math.floor(totalJugadores/2)))}" 
+                           value="${configGuardada.numImpostores}" step="1" 
+                           style="width: 100%; height: 8px; border-radius: 10px; background: linear-gradient(135deg, #667eea, #764ba2);">
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; background: #2a2a3a; border-radius: 15px; padding: 15px;">
-                    <span style="color: white;">🐑OVEJAS:</span>
-                    <span style="color: #4CAF50; font-weight: bold; font-size: 1.2rem;" id="ciudCountDisplay">${totalJugadores - configGuardada.numImpostores}</span>
+                    <span style="color: white;">🐑 Ovejas:</span>
+                    <span style="color: #4CAF50; font-weight: bold; font-size: 1.3rem;" id="ciudCountDisplay">${totalJugadores - configGuardada.numImpostores}</span>
                 </div>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
-                <h3 style="color: white; margin-bottom: 15px;">Lobo 🐺</h3>
+            <!-- Opción del Lobo -->
+            <div class="glass-card" style="margin: 15px 0;">
+                <h3 style="color: white; margin-bottom: 15px;">🐺 Lobo</h3>
                 
                 <label style="display: flex; align-items: center; gap: 15px; background: #2a2a3a; border-radius: 15px; padding: 15px; cursor: pointer;">
-                    <input type="checkbox" id="impostorVeCategoria" ${configGuardada.impostorVeCategoria ? 'checked' : ''} style="width: 20px; height: 20px;">
-                    <span style="color: white; flex: 1;">Mostrar la categoría al Lobo</span>
+                    <input type="checkbox" id="impostorVeCategoria" ${configGuardada.impostorVeCategoria ? 'checked' : ''} 
+                           style="width: 22px; height: 22px; accent-color: #ff9800;">
+                    <span style="color: white; flex: 1;">Mostrar categoría al Lobo</span>
                 </label>
             </div>
             
-            <div style="background: #1e1e2e; border-radius: 20px; padding: 15px; margin: 10px 0;">
+            <!-- Categoría -->
+            <div class="glass-card" style="margin: 15px 0;">
                 <h3 style="color: white; margin-bottom: 15px;">📁 Categoría</h3>
                 
-                <select id="categoriaSelect" style="width: 100%; padding: 15px; border-radius: 15px; background: #2a2a3a; color: white; border: 2px solid #3a3a4a; font-size: 1rem;">
-                    <option value="aleatoria" ${configGuardada.categoria === 'aleatoria' ? 'selected' : ''}>🎲 Categoría Aleatoria</option>
+                <select id="categoriaSelect" style="width: 100%; padding: 15px; border-radius: 15px; 
+                        background: #2a2a3a; color: white; border: 2px solid #667eea; font-size: 1rem;">
+                    <option value="aleatoria" ${configGuardada.categoria === 'aleatoria' ? 'selected' : ''}>🎲 Aleatoria</option>
                     ${Object.keys(categorias).map(cat => 
                         `<option value="${cat}" ${configGuardada.categoria === cat ? 'selected' : ''}>📁 ${cat}</option>`
                     ).join('')}
                 </select>
             </div>
             
-            <!-- BOTÓN GUARDAR CONFIGURACIÓN -->
-            <div style="background: linear-gradient(135deg, #00b09b, #96c93d); border-radius: 20px; padding: 20px; margin: 15px 0; text-align: center;">
-                <button id="guardarConfigBtn" style="background: white; color: #1a1a2e; border: none; border-radius: 30px; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-                    💾 GUARDAR CONFIGURACIÓN
-                </button>
-                <p style="color: white; margin-top: 10px; font-size: 0.9rem;">Toca aquí para guardar los cambios</p>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="btn btn-secondary" style="flex: 1;" id="backToMenu">🔙 Volver al Corral</button>
-            </div>
+            <!-- Botón Guardar -->
+            <button class="btn-modern" id="guardarConfigBtn" style="background: linear-gradient(135deg, #00b09b, #96c93d); margin: 10px 0;">
+                💾 GUARDAR CONFIGURACIÓN
+            </button>
             
             <!-- Mensaje de confirmación -->
-            <div id="configSavedMessage" style="display: none; background: #4CAF50; color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: 10px; animation: slideUp 0.3s ease;">
-                ✅ Configuración guardada correctamente
+            <div id="configSavedMessage" style="display: none; background: #4CAF50; color: white; padding: 12px; 
+                  border-radius: 15px; text-align: center; margin: 10px 0; animation: slideUp 0.3s ease;">
+                ✅ Configuración guardada
             </div>
+            
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a;">
+                🔙 Volver al Corral
+            </button>
         </div>
     `;
     
     app.innerHTML = html;
+    
+    // ... event listeners (igual que antes) ...
     
     let impRange = document.getElementById('impRange');
     let impCountDisplay = document.getElementById('impCountDisplay');
@@ -941,57 +973,52 @@ function renderGameSetup() {
     document.getElementById('backToMenu').addEventListener('click', renderMenu);
 }
 
-// ---------- ESTADÍSTICAS (CON VICTORIAS CIUDADANO) ----------
+// ---------- ESTADÍSTICAS (CON ESTILO MEJORADO) ----------
 function renderStats() {
     let statsPlayers = [...players].sort((a,b) => b.totalPuntos - a.totalPuntos);
     let rows = statsPlayers.map((p, idx) => {
-        let posClass = idx === 0 ? 'pos-1' : (idx === 1 ? 'pos-2' : (idx === 2 ? 'pos-3' : 'pos-rest'));
+        let posClass = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
         return `
-            <div class="stats-row animate-slide-up" style="animation-delay: ${idx * 0.1}s;">
-                <span class="${posClass}">#${idx+1}</span>
-                <span class="stats-nombre">${p.nombre}</span>
-                <span class="stats-numero">${p.partidas}</span>
-                <span class="stats-numero">${p.victoriasImp}</span>
-                <span class="stats-numero">${p.victoriasCiud}</span>
-                <span class="stats-numero">${p.totalPuntos}</span>
+            <div class="vote-card-modern" style="animation-delay: ${idx * 0.1}s; margin: 5px 0;">
+                <div class="vote-avatar-modern" style="background: ${idx === 0 ? 'gold' : (idx === 1 ? 'silver' : (idx === 2 ? '#cd7f32' : '#667eea'))};">${posClass}</div>
+                <div class="vote-info-modern">
+                    <div class="vote-name-modern">${p.nombre}</div>
+                    <div class="vote-status-modern">🐺 ${p.victoriasImp} victorias • 🐑 ${p.victoriasCiud} victorias</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: #ffd700; font-size: 1.2rem; font-weight: bold;">${p.totalPuntos} pts</div>
+                    <div style="color: #a0a0a0; font-size: 0.8rem;">${p.partidas} partidas</div>
+                </div>
             </div>
         `;
-    }).join('');
+    }).join('') || '<p style="color: gray; text-align: center; padding: 20px;">📊 No hay estadísticas aún</p>';
 
     let html = `
-        <div class="screen animate-fade-in">
-            <h2>📊 Estadísticas</h2>
+        <div class="screen" style="padding: 15px;">
+            <h2 class="neon-title" style="font-size: 2rem;">📊 Estadísticas</h2>
             
-            <div class="stats-container">
-                <div class="stats-header-row">
-                    <span class="stats-header-item">#</span>
-                    <span class="stats-header-item">Nombre</span>
-                    <span class="stats-header-item">PJ</span>
-                    <span class="stats-header-item">🐺</span>
-                    <span class="stats-header-item">🐑</span>
-                    <span class="stats-header-item">⭐</span>
+            <div class="glass-card" style="margin: 10px 0; display: flex; justify-content: space-around; padding: 12px;">
+                <div style="text-align: center;">
+                    <span style="color: #ffd700; font-size: 1.2rem;">🐺</span>
+                    <span style="color: white; margin-left: 5px;">Victorias Lobo</span>
                 </div>
-                
-                <div class="stats-rows-container">
-                    ${rows}
+                <div style="text-align: center;">
+                    <span style="color: #4CAF50; font-size: 1.2rem;">🐑</span>
+                    <span style="color: white; margin-left: 5px;">Victorias Oveja</span>
+                </div>
+                <div style="text-align: center;">
+                    <span style="color: #ffd700; font-size: 1.2rem;">⭐</span>
+                    <span style="color: white; margin-left: 5px;">Puntos</span>
                 </div>
             </div>
             
-            <div class="stats-legend">
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">🐺</span> = Victorias como Lobo.
-                </div>
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">🐑</span> = Victorias como Oveja.
-                </div>
-                <div class="stats-legend-item">
-                    <span class="stats-legend-icon">⭐</span> = Puntos totales.
-                </div>
+            <div style="max-height: 450px; overflow-y: auto; padding: 5px;">
+                ${rows}
             </div>
             
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="backToMenu">Volver al Corral</button>
-            </div>
+            <button class="btn-modern" id="backToMenu" style="background: #2a2a3a; margin-top: 15px;">
+                🔙 Volver al Corral
+            </button>
         </div>
     `;
     app.innerHTML = html;
@@ -1166,7 +1193,7 @@ function renderAsignarRoles() {
     });
 }
 
-// ---------- PANTALLA DE JUEGO (ACTUALIZADA - CON ORDEN DE PREGUNTAS) ----------
+// ---------- PANTALLA DE JUEGO (CON ESTILO MEJORADO) ----------
 function renderJuego() {
     if(gameState.eliminatedPlayers.length === gameState.playersInGame.length - 1) {
         terminarJuego('impostor');
@@ -1178,93 +1205,141 @@ function renderJuego() {
     // Determinar si mostrar la categoría o no
     let mostrarCategoria = gameState.impostorVeCategoria;
     
-    // 🔄 Obtener nombres en orden de preguntas
+    // Obtener nombres en orden de preguntas
     let ordenNombres = gameState.ordenPreguntas
         .map(idx => gameState.playersInGame[idx].nombre)
         .join(' → ');
     
     let html = `
-        <div class="screen game-screen-black animate-fade-in">
-            <h2 class="animate-float">🔍 Juego en curso</h2>
-            <p style="color: #aaa;">Ronda ${gameState.round}</p>
+        <div class="screen game-screen-modern">
+            <h2 class="neon-title" style="font-size: 1.8rem;">🔍 Juego en curso</h2>
+            
+            <div class="round-indicator">⚔️ Ronda ${gameState.round}</div>
             
             ${mostrarCategoria ? 
-                `<p style="color: #ccc; text-align:center;">📁 Categoría: ${gameState.categoriaSecreta}</p>` : 
-                `<p style="color: #333; text-align:center;">🔒 Categoría oculta</p>`
+                `<div class="category-tag">📁 ${gameState.categoriaSecreta}</div>` : 
+                `<div class="category-tag" style="border-color: #666; color: #666;">🔒 Categoría oculta</div>`
             }
             
-            <!-- 🔄 NUEVO: Orden de preguntas -->
-            <div style="background: rgba(102,126,234,0.2); border: 2px solid #667eea; border-radius: 20px; padding: 15px; margin: 15px 0;">
-                <p style="color: #ffd700; font-size: 1rem; margin-bottom: 5px;">🔄 Orden de preguntas:</p>
-                <p style="color: white; font-size: 1.2rem; font-weight: bold;">${ordenNombres}</p>
-                <p style="color: #a0a0a0; font-size: 0.8rem; margin-top: 5px;">Sigan este orden para preguntar</p>
+            <!-- Orden de preguntas con estilo -->
+            <div class="order-container">
+                <div class="order-title">🔄 Orden de preguntas</div>
+                <div class="order-names">${ordenNombres}</div>
+                <p style="color: #a0a0a0; font-size: 0.8rem; text-align: center; margin-top: 8px;">Sigan este orden</p>
             </div>
             
-            <p style="color: #ccc; text-align:center;">¡TIEMPO PARA LAS PREGUNTAS!</p>
-            <button class="btn btn-primary animate-pulse" id="abrirVotacionBtn">🗳️ Iniciar Votación</button>
-            <div class="back-button-container" style="width:100%;">
-                <button class="btn btn-secondary" id="salirAlMenu">Volver al Corral</button>
-            </div>
+            <div class="time-message">⏳ ¡TIEMPO PARA PREGUNTAR!</div>
+            
+            <!-- Botones -->
+            <button class="btn-modern" id="abrirVotacionBtn" style="margin: 5px 0;">
+                🗳️ Iniciar Votación
+            </button>
+            
+            <button class="btn-warning-modern" id="cambiarPalabraJuegoBtn" style="margin: 5px 0;">
+                🔄 Cambiar Palabra
+            </button>
+            
+            <button class="btn-modern" id="salirAlMenu" style="background: #2a2a3a; margin-top: 10px;">
+                🏠 Volver al Corral
+            </button>
         </div>
     `;
     app.innerHTML = html;
     
+    // ... event listeners (igual que antes) ...  
     document.getElementById('abrirVotacionBtn').addEventListener('click', () => {
         currentScreen = 'votacion';
         renderScreen();
     });
     
+    // 🔥 NUEVO: Event listener para cambiar palabra
+    document.getElementById('cambiarPalabraJuegoBtn').addEventListener('click', cambiarPalabraDuranteJuego);
+    
     document.getElementById('salirAlMenu').addEventListener('click', renderMenu);
 }
 
-// ---------- VOTACIÓN DEFINITIVA (CORREGIDA - MÚLTIPLES LOBOS Y ORDEN ALEATORIO) ----------
+// ---------- 🔥 FUNCIÓN PARA CAMBIAR PALABRA DURANTE EL JUEGO ----------
+function cambiarPalabraDuranteJuego() {
+    // Confirmar con el usuario
+    if (!confirm('⚠️ ¿Seguro que quieres cambiar la palabra?\n\nEsto reiniciará la ronda actual y todos los jugadores (excepto los lobos) verán la nueva palabra.')) {
+        return;
+    }
+    
+    // Generar nueva palabra de la MISMA categoría
+    let palabrasCategoria = categorias[gameState.categoriaSecreta];
+    let nuevaPalabra;
+    
+    // Asegurar que no sea la misma palabra
+    do {
+        nuevaPalabra = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
+    } while (nuevaPalabra === gameState.palabraSecreta && palabrasCategoria.length > 1);
+    
+    // Guardar palabra anterior para feedback
+    let palabraAnterior = gameState.palabraSecreta;
+    
+    // Actualizar palabra secreta
+    gameState.palabraSecreta = nuevaPalabra;
+    
+    // Mostrar feedback
+    mostrarToast(`🔄 Palabra cambiada: "${palabraAnterior}" → "${nuevaPalabra}"`);
+    
+    // Opcional: Reproducir sonido de cambio
+    SoundEffects.playRevealSound();
+    
+    // Volver a renderizar la pantalla de juego
+    renderJuego();
+}
+
+/// ---------- VOTACIÓN (CON ESTILO MEJORADO) ----------
 function renderVotacion() {
     let activePlayers = gameState.playersInGame.filter((_, idx) => !gameState.eliminatedPlayers.includes(idx));
     let votos = [];
     let votanteActual = 0;
     
     let html = `
-        <div class="screen animate-fade-in">
-            <h2 class="animate-float">🗳️ VOTACIÓN - Ronda ${gameState.round}</h2>
+        <div class="screen game-screen-modern">
+            <h2 class="neon-title" style="font-size: 1.6rem;">🗳️ VOTACIÓN</h2>
+            <div class="round-indicator">Ronda ${gameState.round}</div>
             
-            <div class="animate-glow" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 20px; margin: 10px 0; text-align: center;">
-                <div style="font-size: 1.2rem; color: white; margin-bottom: 5px;">🎯 Pasa el telefono al proximo jugador para votar:</div>
-                <div style="font-size: 2rem; color: white; font-weight: bold;" id="nombreVotante">${activePlayers[0]?.nombre || ''}</div>
-                <div style="color: rgba(255,255,255,0.8); margin-top: 5px;" id="contadorVotos">Voto 1 de ${activePlayers.length}</div>
+            <!-- Indicador de votante actual -->
+            <div class="order-container" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <div style="color: white; font-size: 1rem; margin-bottom: 5px;">🎯 Le toca votar a:</div>
+                <div class="order-names" style="font-size: 1.8rem; background: rgba(0,0,0,0.2);" id="nombreVotante">${activePlayers[0]?.nombre || ''}</div>
+                <div style="color: rgba(255,255,255,0.8); margin-top: 5px; font-size: 0.9rem;" id="contadorVotos">Voto 1 de ${activePlayers.length}</div>
             </div>
             
-            <p style="color: #a0a0a0; text-align: center; margin: 10px 0;">Toca el nombre de tu sospechoso</p>
+            <p style="color: #a0a0a0; text-align: center; margin: 10px 0;">👆 Toca el nombre de tu sospechoso</p>
             
-            <div class="players-list" id="votacionList" style="margin-top: 5px;">
+            <!-- Lista de jugadores -->
+            <div class="players-list" id="votacionList" style="max-height: 350px; overflow-y: auto;">
                 ${activePlayers.map((p, idx) => {
                     let originalIndex = gameState.playersInGame.findIndex(sp => sp.id === p.id);
                     return `
-                        <div class="vote-player-card animate-slide-up" data-originalindex="${originalIndex}" data-voteforindex="${originalIndex}" style="animation-delay: ${idx * 0.1}s;">
-                            <div class="vote-player-avatar">${p.nombre.charAt(0).toUpperCase()}</div>
-                            <div class="vote-player-info">
-                                <div class="vote-player-name">${p.nombre}</div>
-                                <div class="vote-player-status">
-                                    👤 Jugador
-                                </div>
+                        <div class="vote-card-modern" data-originalindex="${originalIndex}" data-voteforindex="${originalIndex}" style="animation-delay: ${idx * 0.1}s;">
+                            <div class="vote-avatar-modern">${p.nombre.charAt(0).toUpperCase()}</div>
+                            <div class="vote-info-modern">
+                                <div class="vote-name-modern">${p.nombre}</div>
+                                <div class="vote-status-modern">👤 Jugador</div>
                             </div>
-                            <div class="vote-count-badge" style="display: none;">0</div>
+                            <div class="vote-badge-modern" style="display: none;">0</div>
                         </div>
                     `;
                 }).join('')}
             </div>
             
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn btn-secondary" style="flex: 1;" id="reiniciarVotosBtn">🔄 Reiniciar</button>
-                <button class="btn btn-primary" style="flex: 1;" id="finalizarVotacionBtn">🔍 Ver Resultado</button>
+            <!-- Botones de acción -->
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <button class="btn-modern" id="reiniciarVotosBtn" style="flex: 1; background: #2a2a3a;">🔄 Reiniciar</button>
+                <button class="btn-modern" id="finalizarVotacionBtn" style="flex: 1;">🔍 Resultado</button>
             </div>
             
-            <div class="back-button-container">
-                <button class="btn btn-secondary" id="volverJuego">◀️ Seguir preguntando</button>
-            </div>
+            <button class="btn-modern" id="volverJuego" style="background: #2a2a3a;">◀️ Seguir preguntando</button>
         </div>
     `;
     
     app.innerHTML = html;
+    
+    // ... resto del código (event listeners, etc.) ...
     
     let nombreVotante = document.getElementById('nombreVotante');
     let contadorVotos = document.getElementById('contadorVotos');
@@ -2114,14 +2189,14 @@ function renderMenuTutorial() {
             <h1>🐑Ovejas y Lobos🐺</h1>
             <p class="subtitle">¡Modo Tutorial Activo!</p>
             
-            <div class="menu-grid">
-                <button class="btn btn-primary" id="btnAddPlayer">➕ Agregar Jugador</button>
-                <button class="btn btn-primary" id="btnGroupManager">🐑 Rebaño 🐑</button>
-                <button class="btn btn-primary" id="btnDictionary">📚 Diccionario</button>
-                <button class="btn btn-primary" id="btnGameSetup">⚙️ Configurar Partida</button>
-                <button class="btn btn-primary" id="btnStats">📊 Estadísticas</button>
-                <button class="btn btn-success" id="btnStartGame">▶ Iniciar Partida</button>
-            </div>
+            <div class="menu-grid" style="gap: 8px;">  <!-- Antes: gap: 10px -->
+    <button class="btn btn-primary" id="btnAddPlayer">➕ Agregar Jugador</button>
+    <button class="btn btn-primary" id="btnGroupManager">🐑 Rebaño 🐑</button>
+    <button class="btn btn-primary" id="btnDictionary">📚 Diccionario</button>
+    <button class="btn btn-primary" id="btnGameSetup">⚙️ Configurar Partida</button>
+    <button class="btn btn-primary" id="btnStats">📊 Estadísticas</button>
+    <button class="btn btn-success" id="btnStartGame">▶ Iniciar Partida</button>
+</div>
         </div>
     `;
     app.innerHTML = html;
@@ -2304,73 +2379,143 @@ function renderStatsTutorial() {
     // En el tutorial, cuando estén en la pantalla de stats, el overlay ya maneja el avance
 }
 
-// ---------- RENDER ASIGNAR ROLES PARA TUTORIAL ----------
-function renderAsignarRolesTutorial() {
-    let paso = pasosTutorial[tutorialPasoActual];
-    let jugador = { nombre: "Jugador 1" };
+// ---------- ASIGNAR ROLES (CON ESTILO MEJORADO) ----------
+function renderAsignarRoles() {
+    if(gameState.currentRolIndex >= gameState.playersInGame.length) {
+        currentScreen = 'juego';
+        renderScreen();
+        return;
+    }
+
+    let jugador = gameState.playersInGame[gameState.currentRolIndex];
+    let esImpostor = gameState.impostorIndexes.includes(gameState.currentRolIndex);
     
-    // Determinar qué rol mostrar según el paso
-    let esLobo = (paso.id === 13 || paso.id === 14); // Pasos 13 y 14 son del lobo
+    console.log(`🎭 Mostrando rol a ${jugador.nombre}:`, {
+        esImpostor,
+        impostorVeCategoria: gameState.impostorVeCategoria,
+        categoria: gameState.categoriaSecreta
+    });
     
     let contenidoRol = '';
-    if (esLobo) {
-        contenidoRol = `
-            <div style="text-align: center;">
-                <p class="impostor-msg animate-glow" style="font-size: 2rem; margin-bottom: 20px;">🐺 ERES EL LOBO</p>
-                <div style="background: rgba(255,215,0,0.2); border: 2px solid #ffd700; border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="color: #ffd700; font-size: 1.2rem; margin-bottom: 5px;">📁 Categoría de la palabra:</p>
-                    <p style="color: white; font-size: 2rem; font-weight: bold;">Animales</p>
-                    <p style="color: #a0a0a0; font-size: 0.9rem; margin-top: 10px;">(Tienes que adivinar la palabra exacta)</p>
+    if (esImpostor) {
+        if (gameState.impostorVeCategoria) {
+            contenidoRol = `
+                <div style="text-align: center;">
+                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
+                    <div style="background: rgba(255,215,0,0.15); border: 3px solid #ffd700; border-radius: 25px; padding: 20px; margin: 15px 0; box-shadow: 0 0 30px rgba(255,215,0,0.3);">
+                        <p style="color: #ffd700; font-size: 1.2rem; margin-bottom: 5px;">📁 Categoría de la palabra:</p>
+                        <p style="color: white; font-size: 2.5rem; font-weight: bold; text-shadow: 0 0 15px #ffd700;">${gameState.categoriaSecreta}</p>
+                        <p style="color: #a0a0a0; font-size: 0.9rem; margin-top: 10px;">(Tienes que adivinar la palabra exacta)</p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        } else {
+            contenidoRol = `
+                <div style="text-align: center;">
+                    <p class="impostor-msg" style="font-size: 2.5rem; margin-bottom: 20px; color: #ff6b6b; text-shadow: 0 0 20px #ff0000;">🐺 ERES EL LOBO</p>
+                    <div style="background: rgba(255,0,0,0.1); border: 3px solid #ff6b6b; border-radius: 25px; padding: 20px; margin: 15px 0;">
+                        <p style="color: white; font-size: 1.5rem;">¡Oculta tu identidad!</p>
+                        <p style="color: #a0a0a0; font-size: 1rem;">Las ovejas tienen la palabra, tú debes descubrirla.</p>
+                    </div>
+                </div>
+            `;
+        }
     } else {
         contenidoRol = `
             <div style="text-align: center;">
-                <p style="color: #4CAF50; font-size: 1.2rem; margin-bottom: 10px;">🐑 ¡ERES UNA OVEJA!</p>
-                <div style="background: rgba(102,126,234,0.2); border: 2px solid #667eea; border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="color: white; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px;">LOBO</p>
-                    <p style="color: #ffd700; font-size: 1.1rem;">📁 Categoría: Animales</p>
-                    <p style="color: #a0a0a0; font-size: 0.9rem; margin-top: 10px;">(Tú ves la palabra completa, el lobo no)</p>
+                <p style="color: #4CAF50; font-size: 1.5rem; margin-bottom: 10px; text-shadow: 0 0 10px #00ff00;">🐑 ¡ERES UNA OVEJA!</p>
+                <div style="background: rgba(102,126,234,0.15); border: 3px solid #667eea; border-radius: 25px; padding: 25px; margin: 15px 0; box-shadow: 0 0 30px rgba(102,126,234,0.3);">
+                    <p style="color: white; font-size: 2.8rem; font-weight: bold; margin-bottom: 10px; text-shadow: 0 0 20px #667eea;">${gameState.palabraSecreta}</p>
+                    <p style="color: #ffd700; font-size: 1.2rem;">📁 Categoría: ${gameState.categoriaSecreta}</p>
                 </div>
             </div>
         `;
     }
     
+    // Barra de progreso de asignación
+    let progreso = ((gameState.currentRolIndex + 1) / gameState.playersInGame.length) * 100;
+    
     let html = `
-        <div class="screen animate-fade-in" style="justify-content: center;">
-            <div class="rol-card" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a);">
-                <h2 id="playerNameDisplay" style="font-size: 2.5rem; color: white; margin-bottom: 20px;">${jugador.nombre}</h2>
+        <div class="screen" style="justify-content: center; padding: 15px;">
+            <!-- Barra de progreso -->
+            <div style="background: rgba(255,255,255,0.1); border-radius: 30px; height: 8px; margin: 10px 0 20px 0;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: ${progreso}%; height: 8px; border-radius: 30px; transition: width 0.3s ease;"></div>
+            </div>
+            <p style="color: #a0a0a0; text-align: center; margin-bottom: 10px;">Jugador ${gameState.currentRolIndex + 1} de ${gameState.playersInGame.length}</p>
+            
+            <!-- Tarjeta de rol -->
+            <div class="rol-card" id="rolCard" style="background: linear-gradient(145deg, #2a2a4a, #1a1a3a); border: 3px solid #667eea; border-radius: 40px; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                <h2 id="playerNameDisplay" class="animate-float" style="font-size: 2.8rem; color: white; margin-bottom: 20px; text-shadow: 0 0 15px #667eea;">${jugador.nombre}</h2>
                 <div id="rolContent" style="display: none;">
                     ${contenidoRol}
                 </div>
             </div>
-            <button class="btn btn-primary" id="revelarRol" style="background: linear-gradient(135deg, #667eea, #764ba2);">✨ Mostrar Rol</button>
-            <button class="btn btn-success" id="siguienteRol" style="display: none; background: linear-gradient(135deg, #00b09b, #96c93d);">Aceptar y pasar</button>
+            
+            <!-- Botones con estilo -->
+            <button class="btn-modern" id="revelarRol" style="margin-top: 20px; padding: 15px; font-size: 1.2rem;">
+                ✨ Mostrar Rol
+            </button>
+            
+            <button class="btn-modern" id="siguienteRol" style="display: none; margin-top: 15px; background: linear-gradient(135deg, #00b09b, #96c93d); padding: 15px; font-size: 1.2rem;">
+                ➡️ Aceptar y pasar
+            </button>
         </div>
     `;
     app.innerHTML = html;
-    
-    // Configurar el botón "Mostrar Rol" para el tutorial
-    let revelarBtn = document.getElementById('revelarRol');
-    let siguienteBtn = document.getElementById('siguienteRol');
-    let playerName = document.getElementById('playerNameDisplay');
-    let rolContent = document.getElementById('rolContent');
-    
-    revelarBtn.addEventListener('click', () => {
+
+    document.getElementById('revelarRol').addEventListener('click', () => {
         SoundEffects.playRevealSound();
         
-        // Ocultar nombre y mostrar rol
-        playerName.style.display = 'none';
-        rolContent.style.display = 'block';
-        revelarBtn.style.display = 'none';
-        siguienteBtn.style.display = 'block';
+        let rolCard = document.getElementById('rolCard');
+        rolCard.classList.add('revealed');
         
-        // Si estamos en el paso del tutorial que espera el clic en "siguienteRol"
-        if (paso && paso.elemento === 'siguienteRol') {
-            configurarListenerPaso(paso);
-        }
+        setTimeout(() => {
+            document.getElementById('playerNameDisplay').style.display = 'none';
+            document.getElementById('rolContent').style.display = 'block';
+            document.getElementById('revelarRol').style.display = 'none';
+            document.getElementById('siguienteRol').style.display = 'block';
+        }, 300);
     });
+
+    document.getElementById('siguienteRol').addEventListener('click', () => {
+        gameState.currentRolIndex++;
+        renderAsignarRoles();
+    });
+}
+
+// ---------- 🔥 FUNCIÓN PARA CAMBIAR PALABRA DURANTE EL JUEGO (CORREGIDA - SIN REVELAR) ----------
+function cambiarPalabraDuranteJuego() {
+    // Confirmar con el usuario
+    if (!confirm('⚠️ ¿Seguro que quieres cambiar la palabra?\n\nSe reiniciará la asignación de roles para que todos vean la nueva información.')) {
+        return;
+    }
+    
+    // Generar nueva palabra de la MISMA categoría
+    let palabrasCategoria = categorias[gameState.categoriaSecreta];
+    let nuevaPalabra;
+    
+    // Asegurar que no sea la misma palabra
+    do {
+        nuevaPalabra = palabrasCategoria[Math.floor(Math.random() * palabrasCategoria.length)];
+    } while (nuevaPalabra === gameState.palabraSecreta && palabrasCategoria.length > 1);
+    
+    // Actualizar palabra secreta (sin mostrar cuál era)
+    gameState.palabraSecreta = nuevaPalabra;
+    
+    // REINICIAR el índice de asignación de roles
+    gameState.currentRolIndex = 0;
+    
+    // Cambiar la pantalla a asignación de roles
+    currentScreen = 'asignarRoles';
+    
+    // Mostrar feedback GENÉRICO (sin revelar la palabra)
+    mostrarToast('🔄 Palabra cambiada correctamente');
+    
+    // Reproducir sonido de cambio
+    SoundEffects.playRevealSound();
+    
+    // Renderizar la pantalla de asignación de roles
+    renderScreen();
 }
 
 // ---------- RENDER JUEGO PARA TUTORIAL ----------
@@ -2430,11 +2575,15 @@ function renderVotacionTutorial() {
                 </div>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn btn-secondary" style="flex: 1;" id="reiniciarVotosBtn">🔄 Reiniciar</button>
-                <button class="btn btn-primary" style="flex: 1;" id="finalizarVotacionBtn">🔍 Ver Resultado</button>
-            </div>
-        </div>
+            <!-- Botones más pequeños y compactos -->
+<div style="display: flex; gap: 8px; margin-top: 15px; justify-content: center;">
+    <button class="btn btn-secondary" id="reiniciarVotosBtn" style="padding: 10px 15px; font-size: 0.9rem; border-radius: 25px; width: auto; min-width: 100px; flex: 0 1 auto;">
+        🔄 Reiniciar
+    </button>
+    <button class="btn btn-primary" id="finalizarVotacionBtn" style="padding: 10px 15px; font-size: 0.9rem; border-radius: 25px; width: auto; min-width: 100px; flex: 0 1 auto;">
+        🔍 Ver Resultado
+    </button>
+</div>
     `;
     app.innerHTML = html;
     
