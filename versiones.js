@@ -1,28 +1,18 @@
 // ---------- SISTEMA DE VERSIONES PROFESIONAL ----------
 const VERSION_HISTORY = {
-    actual: "2.0.1",
+    actual: "2.0.0",
     historial: [
-        {
-            version: "2.0.1",
-            nombre: "Beta",
-            fecha: "2026-02-15",
-            tipo: "patch",
-            cambios: [
-                "🔔 Sistema de notificaciones de versiones (badge rojo)",
-                "🐛 Corrección: Modal de versiones ya no interfiere con el juego",
-                "🐛 Corrección: Ya no se suman puntos extra al cerrar versiones"
-            ]
-        },
         {
             version: "2.0.0",
             nombre: "Beta",
             fecha: "2026-02-15",
             tipo: "major",
             cambios: [
-                "🔄 Sistema de cambiar palabra durante el juego",
-                "🎮 Tutorial interactivo completo (22 pasos)",
-                "🐺 Múltiples lobos con lógica mejorada",
-                "🎨 Rediseño completo con glass morphism",
+                "🔔 Sistema de notificación para actualizaciones",
+                "🔄 Opcion para cambiar la palabra durante el juego",
+                "🎮 Tutorial interactivo y completo",
+                "🐺 Múltiples lobos con en la partida",
+                "🎨 Rediseño visual completo",
                 "📊 Estadísticas con medallas y ranking",
                 "🎵 Música ambiental y efectos de sonido",
                 "🐑 Orden aleatorio de preguntas",
@@ -38,7 +28,7 @@ const VERSION_HISTORY = {
                 "🎵 Música ambiental añadida",
                 "🔊 Efectos de sonido para acciones",
                 "🐑 Sistema de votación mejorado",
-                "📱 Diseño responsive para móviles"
+                "📱 Nuevo diseño de app"
             ]
         },
         {
